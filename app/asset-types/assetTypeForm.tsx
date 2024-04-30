@@ -2,13 +2,12 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FieldPath, useForm } from "react-hook-form"
-import { CreateUserInput, createUserSchema } from "@/lib/user-schema"
-import createUser from "@/utils/createUser"
 import { useFormState, useFormStatus } from "react-dom"
 import { useEffect } from "react"
-import { signIn } from "next-auth/react"
 import toast from "react-hot-toast"
-import { User } from "@/types/user"
+import { AssetType } from "@/types/user"
+import { AssetTypeInput, assetTypeSchema } from "@/lib/asset-schema"
+import createAssetType from "@/utils/createAssetType"
 
 export type State =
 	| {
@@ -25,11 +24,11 @@ export type State =
 	  }
 	| null
 
-export const RegisterForm = () => {
-	const [createPostState, createPostAction] = useFormState<State, any>(createUser, null)
+export const AssetTypeForm = () => {
+	const [createPostState, createPostAction] = useFormState<State, any>(createAssetType, null)
 	const { pending } = useFormStatus()
-	const methods = useForm<CreateUserInput>({
-		resolver: zodResolver(createUserSchema),
+	const methods = useForm<AssetTypeInput>({
+		resolver: zodResolver(assetTypeSchema),
 		mode: "all",
 	})
 
@@ -49,15 +48,14 @@ export const RegisterForm = () => {
 		}
 
 		if (createPostState.status === "success") {
-			toast.success("successfully registered")
+			toast.success("successfully created")
 			reset()
-			signIn(undefined, { callbackUrl: "/" })
 		}
 
 		if (createPostState.status === "error") {
 			toast.error(createPostState.message)
 			createPostState.errors?.forEach((error) => {
-				setError(error.path as FieldPath<User>, {
+				setError(error.path as FieldPath<AssetType>, {
 					message: error.message,
 				})
 			})
@@ -69,36 +67,14 @@ export const RegisterForm = () => {
 				<input {...register("name")} placeholder="Name" className={`${input_style}`} />
 				{errors["name"] && <span className="text-red-500 text-xs pt-1 block">{errors["name"]?.message as string}</span>}
 			</div>
-			<div className="mb-6">
-				<input type="email" {...register("email")} placeholder="Email address" className={`${input_style}`} />
-				{errors["email"] && (
-					<span className="text-red-500 text-xs pt-1 block">{errors["email"]?.message as string}</span>
-				)}
-			</div>
-			<div className="mb-6">
-				<input type="password" {...register("password")} placeholder="Password" className={`${input_style}`} />
-				{errors["password"] && (
-					<span className="text-red-500 text-xs pt-1 block">{errors["password"]?.message as string}</span>
-				)}
-			</div>
-			<div className="mb-6">
-				<input
-					type="password"
-					{...register("passwordConfirm")}
-					placeholder="Confirm Password"
-					className={`${input_style}`}
-				/>
-				{errors["passwordConfirm"] && (
-					<span className="text-red-500 text-xs pt-1 block">{errors["passwordConfirm"]?.message as string}</span>
-				)}
-			</div>
+
 			<button
 				type="submit"
 				style={{ backgroundColor: `${pending ? "#ccc" : "#3446eb"}` }}
 				className="inline-block px-7 py-4 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
 				disabled={pending}
 			>
-				{pending ? "loading..." : "Sign Up"}
+				{pending ? "loading..." : "Create"}
 			</button>
 		</form>
 	)
