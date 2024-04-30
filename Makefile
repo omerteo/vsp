@@ -12,6 +12,6 @@ install dependecies:
 commands:
 	docker-compose up -d
 	docker-compose down
-	pnpm prisma init --datasource-provider postgresql
+	pnpm prisma init --datasource-provider sqlserver
 	pnpm prisma migrate dev --name init 
 

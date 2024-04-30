@@ -1,13 +1,15 @@
-version: '3'
+version: "3"
 services:
-  postgres:
-    image: postgres:latest
-    container_name: postgres
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver
     ports:
-      - '6500:5432'
+      - "1433:1433"
     volumes:
-      - progresDB:/var/lib/postgresql/data
-    env_file:
-      - ./.env
+      - sqlserverDB:/var/opt/mssql
+    environment:
+      SA_PASSWORD: "YourStrong@Passw0rd"
+      ACCEPT_EULA: "Y"
+
 volumes:
-  progresDB:
+  sqlserverDB:
