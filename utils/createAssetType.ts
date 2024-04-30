@@ -17,7 +17,7 @@ const createAssetType: any = async (prevState: State | null, values: FormData) =
 			},
 		})
 
-		revalidatePath("/", "layout")
+		revalidatePath("/asset-types")
 
 		return {
 			status: "success",

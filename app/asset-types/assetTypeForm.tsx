@@ -8,7 +8,6 @@ import toast from "react-hot-toast"
 import { AssetType } from "@/types/user"
 import { AssetTypeInput, assetTypeSchema } from "@/lib/asset-schema"
 import createAssetType from "@/utils/createAssetType"
-import { revalidatePath } from "next/cache"
 
 export type State =
 	| {

@@ -1,7 +1,10 @@
 import { AssetTypeForm } from "./assetTypeForm"
 
 async function getAssetTypes() {
-	const response = await fetch("http:localhost:3000/api/asset-types")
+	const response = await fetch("http:localhost:3000/api/asset-types", {
+		cache: "no-store",
+		next: { tags: ["assetType"] },
+	})
 	const data = await response.json()
 	return data
 }

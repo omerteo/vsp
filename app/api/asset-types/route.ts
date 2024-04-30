@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server"
 import prisma from "@/prisma/prisma"
+import { revalidatePath } from "next/cache"
 
 export async function GET(req: Request) {
 	try {
 		const assetTypes = await prisma.assetType.findMany()
+		revalidatePath(req.url)
 
 		return NextResponse.json(assetTypes)
 	} catch (error: any) {
