@@ -1,6 +1,6 @@
 "use client";
 import * as React from 'react'
-import { Asset, Plan } from "@/types";
+import { Asset, Plan } from "@/types/plan";
 import AssetComposer from "@/components/renderer/assets";
 
 function locateElementInPlans(id: string, selectedLevel: Asset|undefined) {
@@ -34,7 +34,7 @@ export default function PlanViewer({plan}: {plan: Plan | null}) {
     };
     return (
 <>
-      <h1>{plan?.title}</h1>
+      <h1>{plan?.name}</h1>
         <select onChange={onLevelSelect}>
         {plan?.sites.map((site, i) => <option value={i} key={site.id}>{site.label}</option>
         )} </select>

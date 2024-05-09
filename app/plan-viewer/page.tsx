@@ -5,7 +5,7 @@ import { PlanMeta } from '@/types/plan';
 
 export const revalidate = 3600
 
-export default async function FloorPlan() {
+export default async function Plans() {
   const plansResponse = await getAllPlans();
   const plans: PlanMeta[] = plansResponse;
 

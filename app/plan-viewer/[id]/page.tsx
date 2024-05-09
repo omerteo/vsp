@@ -6,8 +6,11 @@ import { Plan } from '@/types/plan';
 
 export const revalidate = 3600
 
-export default async function FloorPlan() {
-  const planResponse = await getPlan(4);
+export default async function FloorPlan({ params }: { params: {id: string} }) {
+  if (!params.id) {
+    return <>not found</>
+  }
+  const planResponse = await getPlan(parseInt(params.id));
   let plan: Plan | null = null;
 
   if (planResponse && planResponse.sites) {
