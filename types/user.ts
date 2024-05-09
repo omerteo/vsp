@@ -8,3 +8,8 @@ export interface User {
 export interface AssetType {
 	name: string
 }
+
+export interface Asset {
+	name: string
+	typeId: number
+}

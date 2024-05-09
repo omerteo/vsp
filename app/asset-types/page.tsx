@@ -20,7 +20,7 @@ export default async function AssetTypePage() {
 						<AssetTypeForm />
 					</div>
 					<div>
-						{assetTypes?.map((assetType: any) => (
+						{assetTypes.length > 0 && assetTypes?.map((assetType: any) => (
 							<li key={assetType.id}>{assetType.name}</li>
 						))}
 					</div>
