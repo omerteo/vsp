@@ -22,10 +22,13 @@ export type Asset = {
     assignable?: boolean
 }
 
-export interface Plan {
+export interface PlanMeta {
     id: number
-    title?: string
-    sites: Asset[]
+    name: string
     createdBy?: number
     updated?: By
+}
+
+export interface Plan extends PlanMeta{
+    sites: Asset[]    
 }

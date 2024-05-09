@@ -1,6 +1,15 @@
 import { db } from '@/lib/db'
 import { cache } from 'react'
 
+export const getAllPlans = cache(async () => {
+  return await db.plan.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  })
+})
+
 export const getPlan = cache(async (id: number) => {
   return db.plan.findUnique({ where: { id: id } })
 })
