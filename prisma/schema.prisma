@@ -79,3 +79,9 @@ model Asset {
   typeId    Int
 }
 
+model Plan {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name      String   @unique
+  sites     String
+}
