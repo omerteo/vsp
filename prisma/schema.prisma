@@ -85,3 +85,14 @@ model Plan {
   name      String   @unique
   sites     String
 }
+
+model AssetAllocation {
+  id        Int      @id @default(autoincrement())
+  assetId   Int
+  userId    String   @map("user_id")
+  allocatedAt DateTime @default(now())
+  deallocatedAt DateTime?
+  
+  asset      Asset    @relation(fields: [assetId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+}
