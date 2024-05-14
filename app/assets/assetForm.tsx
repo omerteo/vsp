@@ -67,7 +67,7 @@ export const AssetFrom = ({ assetTypes }: { assetTypes: any }) => {
 			<div className="mb-6 flex flex-col gap-2">
 				<input {...register("name")} placeholder="Name" className={`${input_style}`} />
 				{errors["name"] && <span className="text-red-500 text-xs pt-1 block">{errors["name"]?.message as string}</span>}
-				<select className={`${input_style}`} {...register("typeId")}>
+				<select className={`${input_style}`} {...register("type")}>
 					<option selected disabled>
 						Select asset type
 					</option>
@@ -75,7 +75,7 @@ export const AssetFrom = ({ assetTypes }: { assetTypes: any }) => {
 						<option key={index} value={assetType.id}>{assetType.name}</option>
 					))}
 				</select>		
-				{errors["typeId"] && <span className="text-red-500 text-xs pt-1 block">{errors["typeId"]?.message as string}</span>}
+				{errors["type"] && <span className="text-red-500 text-xs pt-1 block">{errors["type"]?.message as string}</span>}
 			</div>
 
 			<button

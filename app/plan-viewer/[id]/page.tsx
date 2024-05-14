@@ -1,4 +1,4 @@
-//import planResponse from './sampleData'
+import planResponse from './sampleData'
 import PlanViewer from '@/components/planViewer';
 
 import { getPlan } from '../utils'
@@ -6,15 +6,17 @@ import { Plan } from '@/types/plan';
 
 export const revalidate = 3600
 
-export default async function FloorPlan({ params }: { params: {id: string} }) {
+export default async function FloorPlan({ params }: { params: { id: string } }) {
   if (!params.id) {
     return <>not found</>
   }
-  const planResponse = await getPlan(parseInt(params.id));
+  // const planResponse = await getPlan(parseInt(params.id));
   let plan: Plan | null = null;
 
   if (planResponse && planResponse.sites) {
-    plan = { ...planResponse, sites: JSON.parse(planResponse.sites) };
+    plan = { ...planResponse,
+      // sites: JSON.parse(planResponse.sites)
+    };
   }
 
   return (
