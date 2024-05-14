@@ -1,4 +1,4 @@
-import { AssetFrom } from "./assetForm"
+import { AssetFrom } from "../../components/assets/assetForm"
 import prisma from "@/prisma/prisma"
 
 export default async function AssetsPage() {
