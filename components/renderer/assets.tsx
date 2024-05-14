@@ -1,4 +1,4 @@
-import { Asset } from "@/types"
+import { Asset } from "@/types/asset"
 import Room from "./assets/room"
 import Desk from "./assets/desk"
 
@@ -16,9 +16,10 @@ import Desk from "./assets/desk"
     asset: Asset | undefined
   }
   export default function AssetComposer({ asset }: AssetComposerProps) {
+    console.log(asset)
     return (
       <svg
-        data-type={asset?.assetType}
+        data-type={asset?.type}
         x={asset?.props.x}
         y={asset?.props.y}
         width={asset?.props.width}
@@ -27,7 +28,7 @@ import Desk from "./assets/desk"
         data-assignable={asset?.assignable}
         data-asset-id={asset?.id}
       >
-        {asset && AssetDirectory[asset.assetType](asset)}
+        {asset && AssetDirectory[asset.type](asset)}
       </svg>
     )
   }

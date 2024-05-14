@@ -1,4 +1,4 @@
-import { Asset } from "@/types";
+import { Asset } from "@/types/asset";
 
 type RenderProps = {
     roomColor?: string;
