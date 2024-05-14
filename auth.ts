@@ -21,6 +21,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 			clientId: `${process.env.AZ_CLIENTID}`,
 			tenantId: process.env.AZ_TENANTID,
 			clientSecret: `${process.env.AZ_CLIENTSECRET}`,
+			allowDangerousEmailAccountLinking: true,
 		}),
 		CredentialsProvider({
 			name: "Sign in",
@@ -61,6 +62,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 		authorized({ auth, request: { nextUrl } }) {
 			const isLoggedIn = !!auth?.user
 			const paths = ["/profile", "/client-side"]
+			console.log("pathnameee", nextUrl.pathname)
 			const isProtected = paths.some((path) => nextUrl.pathname.startsWith(path))
 
 			if (isProtected && !isLoggedIn) {

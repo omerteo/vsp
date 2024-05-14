@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-   provider = "sqlserver"
-   url      = env("DATABASE_URL")
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -18,6 +18,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  assets        Asset[]
 
   @@map("users")
 }
@@ -29,11 +30,11 @@ model Account {
   provider          String
   providerAccountId String   @map("provider_account_id")
   token_type        String?
-  refresh_token     String?
-  access_token      String?
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
   expires_at        Int?
   scope             String?
-  id_token          String?
+  id_token          String?  @db.Text
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -46,7 +47,7 @@ model Session {
   id           String   @id @default(cuid())
   userId       String?  @map("user_id")
   sessionToken String   @unique @map("session_token")
-  accessToken  String?  @map("access_token")
+  accessToken  String?  @map("access_token") @db.Text
   expires      DateTime
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -77,11 +78,13 @@ model Asset {
   createdAt DateTime @default(now())
   name      String?
   typeId    Int
+  user      User?    @relation(references: [id], fields: [userId])
+  userId    String?
 }
 
 model Plan {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   name      String   @unique
-  sites     String
+  sites     String?  @db.NVarChar(Max)
 }
