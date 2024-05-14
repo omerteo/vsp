@@ -9,10 +9,11 @@ type AssetProps = {
 
 export type Asset = {
     id: number
-    assetType: number
-    label: string
+    type: number
+    name: string
     props: AssetProps
     assets?: Asset[]
     editable?: boolean
     assignable?: boolean
+    createdAt?: string
 }

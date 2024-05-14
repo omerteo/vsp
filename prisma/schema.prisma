@@ -76,7 +76,7 @@ model Asset {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   name      String?
-  typeId    Int
+  type    Int
 }
 
 model Plan {

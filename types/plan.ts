@@ -7,11 +7,11 @@ type By = {
 
 export interface PlanMeta {
     id: number
-    name: string
-    createdBy?: number
+    title: string
+    created?: By
     updated?: By
 }
 
-export interface Plan extends PlanMeta{
-    sites: Asset[]    
+export interface Plan extends PlanMeta {
+    sites: Asset[]
 }

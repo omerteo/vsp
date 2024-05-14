@@ -6,19 +6,19 @@ import { assetSchema } from "@/lib/asset-schema"
 
 export async function POST(req: Request) {
 	try {
-		const { name, typeId } = assetSchema.parse(await req.json())
+		const { name, type } = assetSchema.parse(await req.json())
 
 		const asset = await prisma.asset.create({
 			data: {
 				name,
-				typeId: typeId,
+				type: parseInt(type)
 			},
 		})
 
 		return NextResponse.json({
 			asset: {
 				name: asset.name,
-				typeId: asset.typeId,
+				type: asset.type,
 			},
 		})
 	} catch (error: any) {

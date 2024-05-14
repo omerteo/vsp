@@ -11,5 +11,5 @@ export interface AssetType {
 
 export interface Asset {
 	name: string
-	typeId: number
+	type: number
 }
