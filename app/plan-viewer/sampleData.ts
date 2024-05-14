@@ -1,4 +1,4 @@
-import { Plan } from "@/types";
+import { Plan } from "@/types/plan";
 
 const thirdFloor = {
   id: 1,
