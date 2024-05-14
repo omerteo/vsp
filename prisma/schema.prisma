@@ -90,8 +90,9 @@ model AssetAllocation {
   id        Int      @id @default(autoincrement())
   assetId   Int
   userId    String   @map("user_id")
+  allocatedBy String 
   allocatedAt DateTime @default(now())
-  deallocatedAt DateTime?
+  schedule String
   
   asset      Asset    @relation(fields: [assetId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
