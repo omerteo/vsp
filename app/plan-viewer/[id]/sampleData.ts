@@ -126,9 +126,8 @@ const DC2: Asset = {
 }
 
 const TEO: Plan = {
-  id: 0,
+  id: 700,
   title: 'TEO Hassan Arcade',
-  createdBy: 1,
   sites: [thirdFloor, DC2]
 }
 

@@ -1,15 +1,8 @@
 import { Asset } from "@prisma/client"
-
-type By = {
-    by: number
-    at: string
-}
-
-export interface PlanMeta {
+import { Created } from "."
+export interface PlanMeta extends Created {
     id: number
     title: string
-    created?: By
-    updated?: By
 }
 
 export interface Plan extends PlanMeta {

@@ -1,3 +1,5 @@
+import { Created } from "."
+
 type AssetProps = {
     span?: number | null | undefined
     x?: number
@@ -7,13 +9,12 @@ type AssetProps = {
     fill?: string
 }
 
-export type Asset = {
+export interface Asset extends Created {
     id: number
     type: number
     name: string
-    props: AssetProps
+    props?: AssetProps
     assets?: Asset[]
     editable?: boolean
     assignable?: boolean
-    createdAt?: string
 }
