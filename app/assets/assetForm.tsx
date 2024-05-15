@@ -11,20 +11,20 @@ import toast from "react-hot-toast"
 
 export type State =
 	| {
-		status: "success"
-		message: string
-	}
-	| {
-		status: "error"
-		message: string
-		errors?: Array<{
-			path: string
+			status: "success"
 			message: string
-		}>
-	}
+	  }
+	| {
+			status: "error"
+			message: string
+			errors?: Array<{
+				path: string
+				message: string
+			}>
+	  }
 	| null
 
-export const AssetFrom = ({ assetTypes }: { assetTypes: any }) => {
+export const AssetForm = ({ assetTypes, users }: { assetTypes: any; users: any }) => {
 	const [createPostState, createPostAction] = useFormState<State, any>(createAsset, null)
 	const { pending } = useFormStatus()
 	const methods = useForm<AssetInput>({
@@ -40,7 +40,10 @@ export const AssetFrom = ({ assetTypes }: { assetTypes: any }) => {
 	} = methods
 
 	const input_style =
-		"form-control block w-full px-4 py-5 text-sm font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+		"form-control block w-full px-4 py-5 text-sm font-normal text-gray-700 bg-white dark:bg-gray-800 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus: outline-none focus:border-blue-500 dark:text-gray-300 dark:border-gray-600 dark:focus:border-blue-500 dark:focus:text-gray-300 dark:focus:bg-gray-700 "
+
+	const select_style =
+		"form-control block w-full px-4 py-4 text-sm font-normal text-gray-700 bg-white dark:bg-gray-800 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus: outline-none focus:border-blue-500 dark:text-gray-300 dark:border-gray-600 dark:focus:border-blue-500 dark:focus:text-gray-300 dark:focus:bg-gray-700 appearance-none"
 
 	useEffect(() => {
 		if (!createPostState) {
@@ -49,14 +52,13 @@ export const AssetFrom = ({ assetTypes }: { assetTypes: any }) => {
 
 		if (createPostState.status === "success") {
 			toast.success("successfully created")
-
 			reset()
 		}
 
 		if (createPostState.status === "error") {
 			toast.error(createPostState.message)
 			createPostState.errors?.forEach((error) => {
-				setError(error.path as FieldPath<Asset>, {
+				setError(error.path as any, {
 					message: error.message,
 				})
 			})
@@ -67,15 +69,29 @@ export const AssetFrom = ({ assetTypes }: { assetTypes: any }) => {
 			<div className="mb-6 flex flex-col gap-2">
 				<input {...register("name")} placeholder="Name" className={`${input_style}`} />
 				{errors["name"] && <span className="text-red-500 text-xs pt-1 block">{errors["name"]?.message as string}</span>}
-				<select className={`${input_style}`} {...register("type")}>
+				<select className={`${select_style} `} {...register("typeId")}>
 					<option selected disabled>
 						Select asset type
 					</option>
 					{assetTypes?.map((assetType: any, index: number) => (
-						<option key={index} value={assetType.id}>{assetType.name}</option>
+						<option key={index} value={assetType.id}>
+							{assetType.name}
+						</option>
 					))}
-				</select>		
-				{errors["type"] && <span className="text-red-500 text-xs pt-1 block">{errors["type"]?.message as string}</span>}
+				</select>
+				{errors["typeId"] && (
+					<span className="text-red-500 text-xs pt-1 block">{errors["typeId"]?.message as string}</span>
+				)}
+				<select className={`${select_style}`} {...register("userId")}>
+					<option selected disabled>
+						Select user
+					</option>
+					{users?.map((user: any, index: number) => (
+						<option key={index} value={user.id}>
+							{user.name}
+						</option>
+					))}
+				</select>
 			</div>
 
 			<button

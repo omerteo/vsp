@@ -3,9 +3,11 @@ import { NextResponse } from "next/server"
 import prisma from "@/prisma/prisma"
 import { createUserSchema } from "@/lib/user-schema"
 import { ZodError } from "zod"
+import { revalidatePath } from "next/cache"
 
 export async function POST(req: Request) {
 	try {
+		revalidatePath(req.url)
 		const { name, email, password } = createUserSchema.parse(await req.json())
 
 		const hashed_password = await hash(password, 12)
