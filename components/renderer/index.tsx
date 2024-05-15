@@ -1,3 +1,5 @@
+import { Asset } from "@/types/asset"
+
 type RenderProps = {
 	roomColor?: string
 	roomBorder?: string
