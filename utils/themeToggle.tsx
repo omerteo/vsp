@@ -1,6 +1,5 @@
 import React from "react"
-import { IoMoon } from "react-icons/io5"
-import { IoSunny } from "react-icons/io5"
+import { MdDarkMode, MdLightMode } from "react-icons/md"
 
 function ThemeToggle() {
 	const [dark, setDark] = React.useState(false)
@@ -13,8 +12,8 @@ function ThemeToggle() {
 	return (
 		<div className="bg-yellow-">
 			<button onClick={() => darkModeHandler()}>
-				{dark && <IoSunny />}
-				{!dark && <IoMoon />}
+				{dark && <MdLightMode color="white" size={20} />}
+				{!dark && <MdDarkMode color="black" />}
 			</button>
 		</div>
 	)

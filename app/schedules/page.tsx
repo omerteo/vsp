@@ -1,7 +1,7 @@
 import prisma from "@/prisma/prisma"
-import { AssetForm } from "./assetForm"
+import { ScheduleForm } from "./scheduleForm"
 import { DataTable } from "@/components/tables/AssetTable"
-import { columns } from "@/components/tables/columns"
+import { columns, scheduleColumns } from "@/components/tables/columns"
 import { DialogCommon } from "@/components/common/Dialog"
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -14,12 +14,13 @@ interface IndexPageProps {
 	}
 }
 
-export default async function AssetsPage({ searchParams }: IndexPageProps) {
+export default async function SchedulePage({ searchParams }: IndexPageProps) {
 	const { page, per_page } = searchParams
+	// calculate limit and offset according page and per_page records
 	const limit = typeof per_page === "string" ? parseInt(per_page) : 10
 	const offset = typeof page === "string" ? (parseInt(page) > 0 ? (parseInt(page) - 1) * limit : 0) : 0
 
-	const assets = await prisma.asset.findMany({
+	const schedules = await prisma.schedule.findMany({
 		skip: offset,
 		take: limit,
 	})
@@ -28,6 +29,9 @@ export default async function AssetsPage({ searchParams }: IndexPageProps) {
 
 	const assetTypes = await prisma.assetType.findMany()
 	const users = await prisma.user.findMany()
+	const days = await prisma.day.findMany()
+
+	console.log(schedules)
 
 	const pageCount = Math.ceil(totals / limit)
 
@@ -38,17 +42,17 @@ export default async function AssetsPage({ searchParams }: IndexPageProps) {
 					<div className="flex justify-end mb-4">
 						<DialogTrigger asChild className="flex justify-end">
 							<Button variant="outline" className="flex justify-end">
-								Create Asset
+								Create Schedule
 							</Button>
 						</DialogTrigger>
 					</div>
 					<DialogContent className="sm:max-w-[425px]">
 						<DialogHeader>
-							<DialogTitle>Create Asset</DialogTitle>
-							<DialogDescription>Create Asset Here.</DialogDescription>
+							<DialogTitle>Create Schedule</DialogTitle>
+							<DialogDescription>Create Schedule Here</DialogDescription>
 						</DialogHeader>
 						<div className="grid gap-4 py-4">
-							<AssetForm assetTypes={assetTypes} users={users} />
+							<ScheduleForm assetTypes={assetTypes} users={users} days={days} />
 						</div>
 						{/* <DialogFooter>
           <Button type="submit">Save changes</Button>
@@ -56,7 +60,7 @@ export default async function AssetsPage({ searchParams }: IndexPageProps) {
 					</DialogContent>
 				</DialogCommon>
 				<div>
-					<DataTable columns={columns} data={assets} pageCount={pageCount} />
+					<DataTable columns={scheduleColumns} data={schedules} pageCount={pageCount} />
 				</div>
 			</section>
 		</>

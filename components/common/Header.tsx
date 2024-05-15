@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import SideBar from "./SideBar"
+import { AvatarIcon } from "@radix-ui/react-icons"
 
 const Header = () => {
 	const session = useSession()
@@ -70,17 +71,21 @@ const Header = () => {
 									></path>
 								</svg>
 							</button>
-							<a href="https://flowbite.com" className="flex ms-2 md:me-24">
+							<a href="#" className="flex ms-2 md:me-24">
 								<Image
-									src="https://flowbite.com/docs/images/logo.svg"
-									className="h-8 me-3"
+									src="/images/logo.png"
+									className="h-10 dark:hidden"
 									alt="FlowBite Logo"
-									width={8}
-									height={8}
+									width={320}
+									height={10}
 								/>
-								<span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
-									Flowbite
-								</span>
+								<Image
+									src="/images/logo-dark.png"
+									className="h-10 hidden dark:block"
+									alt="FlowBite Logo"
+									width={320}
+									height={10}
+								/>
 							</a>
 						</div>
 
@@ -88,21 +93,21 @@ const Header = () => {
 							<ThemeToggle />
 							<div className="relative inline-block text-left">
 								<div>
-									<Image
-										className="w-8 h-8 rounded-full cursor-pointer"
-										src={user?.image || "https://flowbite.com/docs/images/people/profile-picture-5.jpg"}
-										alt="user photo"
-										width={8}
-										height={8}
+									<AvatarIcon
+										className="w-8 h-8 text-gray-400 dark:text-gray-200 cursor-pointer"
 										onClick={toggleUserMenu}
 									/>
 								</div>
 
 								{openUserMenu && (
-									<div className="origin-top-right absolute right-0 mt-2 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-										<div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+									<div className="origin-top-right absolute right-0 mt-2 w-auto rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 border border-gray-200 dark:border-gray-700">
+										<div className="py-1 " role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+											<p className="block px-4 py-2 font-bold text-sm text-gray-700 dark:text-gray-200">{user?.name}</p>
+											<p className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200">{user?.email}</p>
+											<hr className="border-gray-200 dark:border-gray-700" />
+
 											<button
-												className="block px-4 py-2 text-sm w-36 text-gray-700 hover:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+												className="block px-4 py-2 text-sm w-full text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
 												role="menuitem"
 												onClick={() => logoutAction()}
 											>

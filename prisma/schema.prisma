@@ -8,17 +8,18 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
+  id            String     @id @default(uuid())
   name          String
-  email         String?   @unique
+  email         String?    @unique
   password      String?
-  emailVerified DateTime? @map("email_verified")
+  emailVerified DateTime?  @map("email_verified")
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   accounts      Account[]
   sessions      Session[]
   assets        Asset[]
+  schedules     Schedule[]
 
   @@map("users")
 }
@@ -74,12 +75,13 @@ model AssetType {
 }
 
 model Asset {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  name      String?
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  name      String
   typeId    Int
-  user      User?    @relation(references: [id], fields: [userId])
+  user      User?      @relation(references: [id], fields: [userId])
   userId    String?
+  schedules Schedule[]
 }
 
 model Plan {
@@ -87,4 +89,22 @@ model Plan {
   createdAt DateTime @default(now())
   name      String   @unique
   sites     String?  @db.NVarChar(Max)
+}
+
+model Day {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  schedules Schedule[] @relation("scheduleToDay")
+}
+
+model Schedule {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  asset     Asset    @relation(fields: [assetId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  assetId   Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userId    String
+  days      Day[]    @relation("scheduleToDay")
+  startDate DateTime
+  endDate   DateTime
 }

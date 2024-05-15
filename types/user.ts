@@ -10,6 +10,8 @@ export interface AssetType {
 }
 
 export interface Asset {
-	name: string
+	name: string | null
 	typeId: number
+	userId: string | null
+	id?: number
 }

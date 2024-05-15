@@ -3,6 +3,7 @@
 import { AssetInput, assetSchema } from "@/lib/asset-schema"
 import { Asset } from "@/types/user"
 import createAsset from "@/utils/createAsset"
+import createSchedule from "@/utils/createSchedule"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect } from "react"
 import { useFormState, useFormStatus } from "react-dom"
@@ -24,10 +25,10 @@ export type State =
 	  }
 	| null
 
-export const AssetForm = ({ assetTypes, users }: { assetTypes: any; users: any }) => {
-	const [createPostState, createPostAction] = useFormState<State, any>(createAsset, null)
+export const ScheduleForm = ({ assetTypes, users, days }: { assetTypes: any; users: any; days: any }) => {
+	const [createPostState, createPostAction] = useFormState<State, any>(createSchedule, null)
 	const { pending } = useFormStatus()
-	const methods = useForm<AssetInput>({
+	const methods = useForm<any>({
 		resolver: zodResolver(assetSchema),
 		mode: "all",
 	})
@@ -67,8 +68,8 @@ export const AssetForm = ({ assetTypes, users }: { assetTypes: any; users: any }
 	return (
 		<form action={createPostAction}>
 			<div className="mb-6 flex flex-col gap-2">
-				<input {...register("name")} placeholder="Name" className={`${input_style}`} />
-				{errors["name"] && <span className="text-red-500 text-xs pt-1 block">{errors["name"]?.message as string}</span>}
+				{/* <input {...register("name")} placeholder="Name" className={`${input_style}`} />
+				{errors["name"] && <span className="text-red-500 text-xs pt-1 block">{errors["name"]?.message as string}</span>} */}
 				<select className={`${select_style} `} {...register("typeId")}>
 					<option selected disabled>
 						Select asset type
@@ -92,6 +93,25 @@ export const AssetForm = ({ assetTypes, users }: { assetTypes: any; users: any }
 						</option>
 					))}
 				</select>
+
+				<input {...register("startDate")} type="date" placeholder="Start Date" className={`${input_style}`} />
+				{errors["startDate"] && (
+					<span className="text-red-500 text-xs pt-1 block">{errors["startDate"]?.message as string}</span>
+				)}
+
+				<input {...register("endDate")} type="date" placeholder="End Date" className={`${input_style}`} />
+				{errors["endDate"] && (
+					<span className="text-red-500 text-xs pt-1 block">{errors["endDate"]?.message as string}</span>
+				)}
+
+				<div className="flex flex-wrap gap-2">
+					{days?.map((day: any, index: number) => (
+						<label key={index} className="flex items-center">
+							<input type="checkbox" {...register("days")} value={day.id} />
+							<span className="ml-2">{day.name}</span>
+						</label>
+					))}
+				</div>
 			</div>
 
 			<button

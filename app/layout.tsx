@@ -5,6 +5,15 @@ import { Toaster } from "react-hot-toast"
 import { SessionProvider } from "next-auth/react"
 import Navigation from "@/components/common/Navigation"
 
+import { Inter as FontSans } from "next/font/google"
+
+import { cn } from "@/lib/utils"
+
+const fontSans = FontSans({
+	subsets: ["latin"],
+	variable: "--font-sans",
+})
+
 const inter = Inter({ subsets: ["latin"] })
 
 export const revalidate = 0
@@ -22,7 +31,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={inter.className}>
+			<body className={cn("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
 				<SessionProvider>
 					<Navigation>{children}</Navigation>
 				</SessionProvider>

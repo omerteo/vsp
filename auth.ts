@@ -9,7 +9,8 @@ import AzureProvider from "next-auth/providers/azure-ad"
 import type { Adapter } from "@auth/core/adapters"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-	session: { strategy: "jwt" },
+	session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 },
+	secret: process.env.JWT_SECRET,
 	adapter: PrismaAdapter(prisma) as Adapter,
 	pages: {
 		signIn: "/login",
@@ -53,7 +54,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 					id: user.id,
 					email: user.email,
 					name: user.name,
-					randomKey: "Hey cool",
+					randomKey: process.env.JWT_SECRET,
 				}
 			},
 		}),
@@ -61,8 +62,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 	callbacks: {
 		authorized({ auth, request: { nextUrl } }) {
 			const isLoggedIn = !!auth?.user
-			const paths = ["/profile", "/client-side"]
-			console.log("pathnameee", nextUrl.pathname)
+			const paths = ["/profile", "/client-side", "/asset-types"]
 			const isProtected = paths.some((path) => nextUrl.pathname.startsWith(path))
 
 			if (isProtected && !isLoggedIn) {
