@@ -1,26 +1,62 @@
-import { AssetFrom } from "./assetForm"
 import prisma from "@/prisma/prisma"
+import { AssetForm } from "./assetForm"
+import { DataTable } from "@/components/tables/AssetTable"
+import { columns } from "@/components/tables/columns"
+import { DialogCommon } from "@/components/common/Dialog"
+import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 
-export default async function AssetsPage() {
-	const assets = await prisma.asset.findMany();
-	const assetTypes = await prisma.assetType.findMany();
+export const revalidate = 0 // no cache
 
+interface IndexPageProps {
+	searchParams: {
+		[key: string]: string | string[] | undefined
+	}
+}
 
-	console.log(assetTypes)
+export default async function AssetsPage({ searchParams }: IndexPageProps) {
+	const { page, per_page } = searchParams
+	const limit = typeof per_page === "string" ? parseInt(per_page) : 10
+	const offset = typeof page === "string" ? (parseInt(page) > 0 ? (parseInt(page) - 1) * limit : 0) : 0
 
+	const assets = await prisma.asset.findMany({
+		skip: offset,
+		take: limit,
+	})
+
+	const totals = await prisma.asset.count()
+
+	const assetTypes = await prisma.assetType.findMany()
+	const users = await prisma.user.findMany()
+
+	const pageCount = Math.ceil(totals / limit)
 
 	return (
 		<>
-			<section className="bg-ct-blue-600 min-h-screen pt-20">
-				<div className="container mx-auto px-6 py-12 h-full flex justify-between items-center">
-					<div className="md:w-8/12 lg:w-5/12 bg-white px-8 py-10">
-						<AssetFrom assetTypes={assetTypes} />
+			<section className="bg-white dark:bg-gray-800 min-h-screen pt-20">
+				<DialogCommon>
+					<div className="flex justify-end mb-4">
+						<DialogTrigger asChild className="flex justify-end">
+							<Button variant="outline" className="flex justify-end">
+								Create Asset
+							</Button>
+						</DialogTrigger>
 					</div>
-					<div>
-						{assets.length > 0 && assets?.map((assetType: any) => (
-							<li key={assetType.id}>{assetType.name}</li>
-						))}
-					</div>
+					<DialogContent className="sm:max-w-[425px]">
+						<DialogHeader>
+							<DialogTitle>Create Asset</DialogTitle>
+							<DialogDescription>Create Asset Here.</DialogDescription>
+						</DialogHeader>
+						<div className="grid gap-4 py-4">
+							<AssetForm assetTypes={assetTypes} users={users} />
+						</div>
+						{/* <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter> */}
+					</DialogContent>
+				</DialogCommon>
+				<div>
+					<DataTable columns={columns} data={assets} pageCount={pageCount} />
 				</div>
 			</section>
 		</>

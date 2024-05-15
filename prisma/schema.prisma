@@ -3,21 +3,23 @@ generator client {
 }
 
 datasource db {
-   provider = "sqlserver"
-   url      = env("DATABASE_URL")
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id            String    @id @default(uuid())
+  id            String     @id @default(uuid())
   name          String
-  email         String?   @unique
+  email         String?    @unique
   password      String?
-  emailVerified DateTime? @map("email_verified")
+  emailVerified DateTime?  @map("email_verified")
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   accounts      Account[]
   sessions      Session[]
+  assets        Asset[]
+  schedules     Schedule[]
 
   @@map("users")
 }
@@ -29,11 +31,11 @@ model Account {
   provider          String
   providerAccountId String   @map("provider_account_id")
   token_type        String?
-  refresh_token     String?
-  access_token      String?
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
   expires_at        Int?
   scope             String?
-  id_token          String?
+  id_token          String?  @db.Text
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -46,7 +48,7 @@ model Session {
   id           String   @id @default(cuid())
   userId       String?  @map("user_id")
   sessionToken String   @unique @map("session_token")
-  accessToken  String?  @map("access_token")
+  accessToken  String?  @map("access_token") @db.Text
   expires      DateTime
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -73,15 +75,36 @@ model AssetType {
 }
 
 model Asset {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  name      String?
-  type    Int
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  name      String
+  typeId    Int
+  user      User?      @relation(references: [id], fields: [userId])
+  userId    String?
+  schedules Schedule[]
 }
 
 model Plan {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   name      String   @unique
-  sites     String
+  sites     String?  @db.NVarChar(Max)
+}
+
+model Day {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  schedules Schedule[] @relation("scheduleToDay")
+}
+
+model Schedule {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  asset     Asset    @relation(fields: [assetId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  assetId   Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userId    String
+  days      Day[]    @relation("scheduleToDay")
+  startDate DateTime
+  endDate   DateTime
 }

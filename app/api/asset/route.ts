@@ -1,24 +1,26 @@
 import { hash } from "bcryptjs"
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import prisma from "@/prisma/prisma"
 import { ZodError } from "zod"
 import { assetSchema } from "@/lib/asset-schema"
 
 export async function POST(req: Request) {
 	try {
-		const { name, type } = assetSchema.parse(await req.json())
+		const { name, typeId, userId } = assetSchema.parse(await req.json())
 
 		const asset = await prisma.asset.create({
 			data: {
 				name,
-				type: parseInt(type)
+				typeId: Number(typeId),
+				userId: userId,
 			},
 		})
 
 		return NextResponse.json({
 			asset: {
 				name: asset.name,
-				type: asset.type,
+				typeId: asset.typeId,
+				userId: asset.userId,
 			},
 		})
 	} catch (error: any) {
@@ -53,13 +55,20 @@ export async function POST(req: Request) {
 	}
 }
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
 	try {
-		const assets = await prisma.asset.findMany()
-
-		return NextResponse.json({
-			assets: assets,
+		const searchParams = req.nextUrl.searchParams
+		// totals records for each page
+		const limit = searchParams?.get("limit") ?? "5"
+		// skip for the offset
+		const offset = searchParams?.get("offset") ?? "0"
+		const assets = await prisma.asset.findMany({
+			skip: Number(offset),
+			take: Number(limit),
 		})
+		const totals = await prisma.asset.count()
+
+		return NextResponse.json({ data: JSON.stringify(await assets), totals: totals })
 	} catch (error: any) {
 		if (error.code === "P2001") {
 			return NextResponse.json(
