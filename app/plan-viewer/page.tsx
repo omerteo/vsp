@@ -1,6 +1,6 @@
 //import planResponse from './sampleData'
 import Plan from '@/components/planList';
-import { getAllPlans } from './utils'
+import { getAllPlans } from '../utils'
 import { PlanMeta } from '@/types/plan';
 
 export const revalidate = 3600

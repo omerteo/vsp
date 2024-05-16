@@ -18,3 +18,8 @@ export const getAssetCatalog = cache(async () => {
   const items = await db.assetType.findMany()
   return items
 })
+
+export const getAssets = cache(async () => {
+  const items = await db.asset.findMany()
+  return items
+})

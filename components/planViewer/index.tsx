@@ -1,17 +1,18 @@
 "use client";
 import * as React from 'react'
 import { Plan } from "@/types/plan";
-import { Asset } from "@/types/asset";
+import { Asset as MapAsset } from "@/types/asset";
 import AssetComposer from "@/components/renderer/assets";
+import { Asset } from '@prisma/client';
 
-function locateElementInPlans(id: string, selectedLevel: Asset | undefined) {
+function locateElementInPlans(id: string, selectedLevel: MapAsset | undefined) {
   console.log(id)
 
 }
 
-export default function PlanViewer({ plan }: { plan: Plan | null }) {
+export default function PlanViewer({ plan}: { plan: Plan | null}) {
   console.log(plan)
-  const [selectedSite, setSelectedSite] = React.useState<Asset | undefined>(plan?.sites[0] || {} as Asset);
+  const [selectedSite, setSelectedSite] = React.useState<MapAsset | undefined>(plan?.sites[0] || {} as MapAsset);
 
   const handleClick = (event: React.MouseEvent) => {
     event.preventDefault()
@@ -28,13 +29,13 @@ export default function PlanViewer({ plan }: { plan: Plan | null }) {
   }
 
   const onLevelSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSite(plan?.sites[parseInt(event.target.value)]);
+    setSelectedSite(plan?.sites[parseInt(event.target.value)] as MapAsset);
   };
   return (
     <>
-      <h1>{plan?.name}</h1>
+      <h1>{plan?.title}</h1>
       <select onChange={onLevelSelect}>
-        {plan?.sites.map((site, i) => <option value={i} key={site.id}>{site.label}</option>
+        {plan?.sites.map((site, i) => <option value={i} key={site.id}>{site.id}</option>
         )} </select>
       <div onClick={handleClick}>
         <AssetComposer asset={selectedSite} />

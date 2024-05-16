@@ -5,4 +5,5 @@ export const PlanModel = z.object({
   createdAt: z.date(),
   name: z.string(),
   sites: z.string().nullish(),
+  map: z.string().nullish(),
 })

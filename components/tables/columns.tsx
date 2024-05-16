@@ -3,6 +3,10 @@ import { ColumnDef } from "@tanstack/react-table"
 
 export const columns: any = [
 	{
+		accessorKey: "id",
+		header: "ID",
+	},
+	{
 		accessorKey: "name",
 		header: "Name",
 	},

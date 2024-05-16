@@ -1,4 +1,4 @@
-import { Asset } from "@prisma/client"
+import { Asset as MapAsset } from "./asset"
 import { Created } from "."
 export interface PlanMeta extends Created {
     id: number
@@ -6,5 +6,6 @@ export interface PlanMeta extends Created {
 }
 
 export interface Plan extends PlanMeta {
-    sites: Asset[]
+    sites: MapAsset[]
+    assetMapping: {[key: number]: number}
 }

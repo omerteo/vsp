@@ -12,9 +12,10 @@ type AssetProps = {
 export interface Asset extends Created {
     id: number
     type: number
-    name: string
     props?: AssetProps
     assets?: Asset[]
     editable?: boolean
     assignable?: boolean
+    isolated?: boolean
+    label?: string
 }
