@@ -7,25 +7,24 @@ import { Asset } from "@/types/asset"
 
 export const revalidate = 3600
 
-let companyAssets: {[key: number]: {name: string}} = {};
-let assetMapping: {[key: number]: number} = {};
+let companyAssets: { [key: number]: { name: string } } = {};
+let assetMapping: { [key: number]: number } = {};
 
-function mapAssetToAsset (planAsset: Asset) {
-	const newAsset = {...planAsset};
+function mapAssetToAsset(planAsset: Asset) {
+	const newAsset = { ...planAsset };
 	const correspondingAssetId = assetMapping[newAsset.id];
 	newAsset.label = companyAssets[correspondingAssetId]?.name || 'Unnamed';
+	if (newAsset.assets) {
+		newAsset.assets = newAsset.assets.map(asset => mapAssetToAsset(asset));
+	}
 	return newAsset
 }
 
-// function mapPlanToAssets (plan: Asset) {
-	
-// 	plan.assets = site.assets?.map(asset => {
-// 			;
-// 		});
-// 		return newSite;
-
-
-// }
+function mapPlanToAssets(sites: Asset[]) {
+	let newSites = [...sites];
+	newSites.forEach(site => mapAssetToAsset(site));
+	return newSites;
+}
 
 export default async function FloorPlan({ params }: { params: { id: string } }) {
 	if (!params.id) {
@@ -35,7 +34,7 @@ export default async function FloorPlan({ params }: { params: { id: string } }) 
 	const assetResponse = await getAssets();
 
 	assetResponse.forEach(obj => {
-		companyAssets[obj.id] = {name: obj.name};
+		companyAssets[obj.id] = { name: obj.name };
 	});
 
 	let plan: Plan | null = null
@@ -43,10 +42,9 @@ export default async function FloorPlan({ params }: { params: { id: string } }) 
 	if (planResponse && planResponse.sites) {
 		plan = {
 			...planResponse,
-			// sites: JSON.parse(planResponse.sites)
+			sites: mapPlanToAssets(planResponse.sites)
 		}
-		 assetMapping = plan.assetMapping;
-		// plan.sites = plan.sites.map(site => mapPlanToAssets(site))
+		assetMapping = plan.assetMapping;
 	}
 
 	return (
@@ -54,8 +52,6 @@ export default async function FloorPlan({ params }: { params: { id: string } }) 
 			{JSON.stringify(plan)}
 			{plan !== null && (
 				<>
-				
-				
 					<PlanViewer plan={plan} />
 				</>
 			)}
