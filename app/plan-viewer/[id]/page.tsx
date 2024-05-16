@@ -12,6 +12,7 @@ let assetMapping: { [key: number]: number } = {};
 
 function mapAssetToAsset(planAsset: Asset) {
 	const newAsset = { ...planAsset };
+	
 	const correspondingAssetId = assetMapping[newAsset.id];
 	newAsset.label = companyAssets[correspondingAssetId]?.name || 'Unnamed';
 	if (newAsset.assets) {
@@ -23,6 +24,7 @@ function mapAssetToAsset(planAsset: Asset) {
 function mapPlanToAssets(sites: Asset[]) {
 	let newSites = [...sites];
 	newSites.forEach(site => mapAssetToAsset(site));
+	console.log(newSites);
 	return newSites;
 }
 
@@ -42,7 +44,7 @@ export default async function FloorPlan({ params }: { params: { id: string } }) 
 	if (planResponse && planResponse.sites) {
 		plan = {
 			...planResponse,
-			sites: mapPlanToAssets(planResponse.sites)
+			sites: typeof planResponse.sites === 'string' ? mapPlanToAssets(JSON.parse(planResponse.sites)) : mapPlanToAssets(planResponse.sites)
 		}
 		assetMapping = planResponse.assetMapping;
 	}
