@@ -7,25 +7,23 @@ import { Asset } from "@/types/asset"
 
 export const revalidate = 3600
 
-let companyAssets: { [key: number]: { name: string } } = {};
-let assetMapping: { [key: number]: number } = {};
+let companyAssets: { [key: string]: { name: string } } = {};
+let assetMapping: { [key: string]: number } = {};
 
 function mapAssetToAsset(planAsset: Asset) {
 	const newAsset = { ...planAsset };
-	
-	const correspondingAssetId = assetMapping[newAsset.id];
-	newAsset.label = companyAssets[correspondingAssetId]?.name || 'Unnamed';
+
+	const correspondingAssetId = assetMapping[newAsset.id.toString()];
+	newAsset.label = companyAssets[correspondingAssetId]?.name || '';
 	if (newAsset.assets) {
 		newAsset.assets = newAsset.assets.map(asset => mapAssetToAsset(asset));
+
 	}
 	return newAsset
 }
 
 function mapPlanToAssets(sites: Asset[]) {
-	let newSites = [...sites];
-	newSites.forEach(site => mapAssetToAsset(site));
-	console.log(newSites);
-	return newSites;
+	return sites.map(site => mapAssetToAsset(site))
 }
 
 export default async function FloorPlan({ params }: { params: { id: string } }) {
@@ -41,12 +39,15 @@ export default async function FloorPlan({ params }: { params: { id: string } }) 
 
 	let plan: Plan | null = null
 
+	if (planResponse && planResponse.assetMapping) {
+		assetMapping = planResponse.assetMapping
+	}
+
 	if (planResponse && planResponse.sites) {
 		plan = {
 			...planResponse,
 			sites: typeof planResponse.sites === 'string' ? mapPlanToAssets(JSON.parse(planResponse.sites)) : mapPlanToAssets(planResponse.sites)
 		}
-		assetMapping = planResponse.assetMapping;
 	}
 
 	return (
