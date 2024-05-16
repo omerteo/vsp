@@ -112,8 +112,8 @@ const TEO: Plan = {
 	title: 'TEO Hassan Arcade',
 	sites: [thirdFloor, DC2],
 	assetMapping: {
-		22: 5,
-		2: 5
+		333: 5,
+		16: 4
 	}
 }
 
