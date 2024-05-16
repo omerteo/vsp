@@ -44,7 +44,7 @@ export default async function FloorPlan({ params }: { params: { id: string } }) 
 			...planResponse,
 			sites: mapPlanToAssets(planResponse.sites)
 		}
-		assetMapping = plan.assetMapping;
+		assetMapping = planResponse.assetMapping;
 	}
 
 	return (
