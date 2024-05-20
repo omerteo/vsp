@@ -3,26 +3,13 @@ generator client {
 }
 
 generator zod {
-  provider = "zod-prisma"
-  output   = "./zod" // (default) the directory where generated zod schemas will be saved
-
-  relationModel = true // (default) Create and export both plain and related models.
-  // relationModel         = "default" // Do not export model without relations.
-  // relationModel         = false // Do not generate related model
-
-  modelCase = "PascalCase" // (default) Output models using pascal case (ex. UserModel, PostModel)
-  // modelCase             = "camelCase" // Output models using camel case (ex. userModel, postModel)
-
-  modelSuffix = "Model" // (default) Suffix to apply to your prisma models when naming Zod schemas
-
-  // useDecimalJs          = false // (default) represent the prisma Decimal type using as a JS number
-  useDecimalJs = true // represent the prisma Decimal type using Decimal.js (as Prisma does)
-
-  // imports                  = "../lib/zod-schemas" // (default) will import the referenced file in generated schemas to be used via imports.someExportedVariable
-
-  // https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-by-null-values
-  prismaJsonNullability = true // (default) uses prisma's scheme for JSON field nullability
-  // prismaJsonNullability = false // allows null assignment to optional JSON fields
+  provider              = "zod-prisma"
+  output                = "./zod"
+  useDecimalJs          = "true"
+  modelCase             = "PascalCase"
+  relationModel         = "true"
+  modelSuffix           = "Model"
+  prismaJsonNullability = "true"
 }
 
 datasource db {
@@ -31,18 +18,16 @@ datasource db {
 }
 
 model User {
-  id            String     @id @default(uuid())
+  id            String    @id @default(uuid())
   name          String
-  email         String?    @unique
+  email         String?   @unique
   password      String?
-  emailVerified DateTime?  @map("email_verified")
+  emailVerified DateTime? @map("email_verified")
   image         String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
-  assets        Asset[]
-  schedules     Schedule[]
 
   @@map("users")
 }
@@ -98,13 +83,13 @@ model AssetType {
 }
 
 model Asset {
-  id        Int        @id @default(autoincrement())
-  createdAt DateTime   @default(now())
-  name      String
-  typeId    Int
-  user      User?      @relation(references: [id], fields: [userId])
-  userId    String?
-  schedules Schedule[]
+  id         Int        @id @default(autoincrement())
+  createdAt  DateTime   @default(now())
+  name       String
+  typeId     Int
+  schedules  Schedule[]
+  employeeId Int
+  employee   Employee   @relation(fields: [employeeId], references: [employeeId])
 }
 
 model Plan {
@@ -115,20 +100,43 @@ model Plan {
   map       String?  @db.NVarChar(Max)
 }
 
-model Day {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique
-  schedules Schedule[] @relation("scheduleToDay")
+model Schedule {
+  id           Int       @id @default(autoincrement())
+  createdAt    DateTime  @default(now())
+  assetId      Int
+  employeeId   Int
+  startDate    DateTime
+  endDate      DateTime? // Make this optional
+  scheduleType String
+  asset        Asset     @relation(fields: [assetId], references: [id], onUpdate: NoAction)
+  employee     Employee  @relation(fields: [employeeId], references: [employeeId], onUpdate: NoAction)
+  days         Day[]     @relation("scheduleToDay")
 }
 
-model Schedule {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  asset     Asset    @relation(fields: [assetId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  assetId   Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  userId    String
-  days      Day[]    @relation("scheduleToDay")
-  startDate DateTime
-  endDate   DateTime
+model Day {
+  id         Int      @id @default(autoincrement())
+  dayOfWeek  String
+  scheduleId Int
+  schedule   Schedule @relation("scheduleToDay", fields: [scheduleId], references: [id])
+
+  @@unique([dayOfWeek, scheduleId])
+}
+
+model Employee {
+  employeeId        Int        @id @unique
+  name              String
+  yearsExperience   Int? // nullable because it can be null
+  joinedOn          DateTime
+  imagePath         String?
+  employeeCode      String
+  designationName   String
+  checkedInAt       DateTime?
+  checkedOutAt      DateTime?
+  currentWeekHours  Int?
+  lastWeekHours     Int?
+  modifiedTimeStamp Int?
+  statusType        String?
+  statusReason      String?
+  assets            Asset[]
+  schedules         Schedule[]
 }

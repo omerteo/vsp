@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import Image from "next/image"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
@@ -14,8 +14,7 @@ export const LoginForm = () => {
 	const [error, setError] = useState("")
 	const [submitting, setSubmitting] = useState(false)
 
-	const searchParams = useSearchParams()
-	const callbackUrl = searchParams.get("callbackUrl") || "/profile"
+	const callbackUrl = process.env.NEXT_PUBLIC_AUTH_URI
 
 	const methods = useForm<LoginUserInput>({
 		resolver: zodResolver(loginUserSchema),
@@ -43,7 +42,7 @@ export const LoginForm = () => {
 
 			if (!res?.error) {
 				toast.success("successfully logged in")
-				router.push(callbackUrl)
+				router.push(callbackUrl || "/")
 			} else {
 				reset({ password: "" })
 				const message = "invalid email or password"
@@ -111,7 +110,7 @@ export const LoginForm = () => {
 			<a
 				className="px-7 py-2 text-blue font-medium text-sm leading-snug uppercase rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center items-center"
 				style={{ backgroundColor: "#fff" }}
-				onClick={() => signIn("azure-ad", { callbackUrl })}
+				onClick={() => signIn("azure-ad", { callbackUrl, redirect: true })}
 				role="button"
 			>
 				<Image className="pr-2" src="/images/microsoft.svg" alt="" width={40} height={40} />

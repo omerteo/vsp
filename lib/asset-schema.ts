@@ -3,7 +3,7 @@ import { TypeOf, number, object, string } from "zod"
 export const assetSchema = object({
 	name: string({ required_error: "Name is required" }).min(1, "Name is required"),
 	typeId: string({ required_error: "Type Id is required" }),
-	userId: string({ required_error: "User Id is required" }),
+	employeeId: string({ required_error: "Employee Id is required" }),
 })
 
 export const assetTypeSchema = object({

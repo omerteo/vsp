@@ -1,7 +1,7 @@
 import prisma from "@/prisma/prisma"
 import { AssetForm } from "./assetForm"
 import { DataTable } from "@/components/tables/AssetTable"
-import { columns } from "@/components/tables/columns"
+import { assetColumns } from "@/components/tables/columns"
 import { DialogCommon } from "@/components/common/Dialog"
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -22,12 +22,18 @@ export default async function AssetsPage({ searchParams }: IndexPageProps) {
 	const assets = await prisma.asset.findMany({
 		skip: offset,
 		take: limit,
+		include: {
+			employee: true,
+			schedules: true,
+		},
 	})
+
+	console.log(assets)
 
 	const totals = await prisma.asset.count()
 
 	const assetTypes = await prisma.assetType.findMany()
-	const users = await prisma.user.findMany()
+	const users = await prisma.employee.findMany()
 
 	const pageCount = Math.ceil(totals / limit)
 
@@ -56,7 +62,7 @@ export default async function AssetsPage({ searchParams }: IndexPageProps) {
 					</DialogContent>
 				</DialogCommon>
 				<div>
-					<DataTable columns={columns} data={assets} pageCount={pageCount} />
+					<DataTable columns={assetColumns} data={assets} pageCount={pageCount} />
 				</div>
 			</section>
 		</>

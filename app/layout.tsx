@@ -2,12 +2,12 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "react-hot-toast"
-import { SessionProvider } from "next-auth/react"
 import Navigation from "@/components/common/Navigation"
 
 import { Inter as FontSans } from "next/font/google"
 
 import { cn } from "@/lib/utils"
+import NextAuthProvider from "@/lib/providers/nextAuthProvider"
 
 const fontSans = FontSans({
 	subsets: ["latin"],
@@ -32,9 +32,9 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={cn("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
-				<SessionProvider>
+				<NextAuthProvider>
 					<Navigation>{children}</Navigation>
-				</SessionProvider>
+				</NextAuthProvider>
 
 				<Toaster />
 			</body>

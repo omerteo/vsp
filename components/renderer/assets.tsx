@@ -15,7 +15,6 @@ interface AssetComposerProps {
 	asset: Asset | undefined
 }
 export default function AssetComposer({ asset }: AssetComposerProps) {
-	console.log(asset)
 	return (
 		<svg
 			data-type={asset?.type}

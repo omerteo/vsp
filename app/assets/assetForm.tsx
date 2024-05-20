@@ -71,7 +71,7 @@ export const AssetForm = ({ assetTypes, users }: { assetTypes: any; users: any }
 				{errors["name"] && <span className="text-red-500 text-xs pt-1 block">{errors["name"]?.message as string}</span>}
 				<select className={`${select_style} `} {...register("typeId")}>
 					<option selected disabled>
-						Select asset type
+						Select asset
 					</option>
 					{assetTypes?.map((assetType: any, index: number) => (
 						<option key={index} value={assetType.id}>
@@ -82,12 +82,12 @@ export const AssetForm = ({ assetTypes, users }: { assetTypes: any; users: any }
 				{errors["typeId"] && (
 					<span className="text-red-500 text-xs pt-1 block">{errors["typeId"]?.message as string}</span>
 				)}
-				<select className={`${select_style}`} {...register("userId")}>
+				<select className={`${select_style}`} {...register("employeeId")}>
 					<option selected disabled>
 						Select user
 					</option>
 					{users?.map((user: any, index: number) => (
-						<option key={index} value={user.id}>
+						<option key={index} value={user.employeeId}>
 							{user.name}
 						</option>
 					))}

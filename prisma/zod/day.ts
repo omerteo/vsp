@@ -3,11 +3,12 @@ import { CompleteSchedule, RelatedScheduleModel } from "./index"
 
 export const DayModel = z.object({
   id: z.number().int(),
-  name: z.string(),
+  dayOfWeek: z.string(),
+  scheduleId: z.number().int(),
 })
 
 export interface CompleteDay extends z.infer<typeof DayModel> {
-  schedules: CompleteSchedule[]
+  schedule: CompleteSchedule
 }
 
 /**
@@ -16,5 +17,5 @@ export interface CompleteDay extends z.infer<typeof DayModel> {
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const RelatedDayModel: z.ZodSchema<CompleteDay> = z.lazy(() => DayModel.extend({
-  schedules: RelatedScheduleModel.array(),
+  schedule: RelatedScheduleModel,
 }))

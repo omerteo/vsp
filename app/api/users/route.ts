@@ -3,11 +3,7 @@ import prisma from "@/prisma/prisma"
 
 export async function GET(req: Request) {
 	try {
-		const users = await prisma.user.findMany({
-			include: {
-				assets: true,
-			},
-		})
+		const users = await prisma.user.findMany({})
 
 		return NextResponse.json(users)
 	} catch (error: any) {

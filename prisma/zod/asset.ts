@@ -1,17 +1,17 @@
 import * as z from "zod"
-import { CompleteUser, RelatedUserModel, CompleteSchedule, RelatedScheduleModel } from "./index"
+import { CompleteSchedule, RelatedScheduleModel, CompleteEmployee, RelatedEmployeeModel } from "./index"
 
 export const AssetModel = z.object({
   id: z.number().int(),
   createdAt: z.date(),
   name: z.string(),
   typeId: z.number().int(),
-  userId: z.string().nullish(),
+  employeeId: z.number().int(),
 })
 
 export interface CompleteAsset extends z.infer<typeof AssetModel> {
-  user?: CompleteUser | null
   schedules: CompleteSchedule[]
+  employee: CompleteEmployee
 }
 
 /**
@@ -20,6 +20,6 @@ export interface CompleteAsset extends z.infer<typeof AssetModel> {
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const RelatedAssetModel: z.ZodSchema<CompleteAsset> = z.lazy(() => AssetModel.extend({
-  user: RelatedUserModel.nullish(),
   schedules: RelatedScheduleModel.array(),
+  employee: RelatedEmployeeModel,
 }))

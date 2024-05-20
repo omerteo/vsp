@@ -17,11 +17,13 @@ const thirdFloor: Asset = {
 			id: 3,
 			type: 2,
 			props: { span: 2, x: 220, y: 20 },
+			editable: true,
 		},
 		{
 			id: 4,
 			props: { x: 20, y: 110 },
 			type: 2,
+			editable: true,
 		},
 		{
 			id: 5,
@@ -109,12 +111,12 @@ const DC2: Asset = {
 
 const TEO: Plan = {
 	id: 700,
-	title: 'TEO Hassan Arcade',
+	title: "TEO Hassan Arcade",
 	sites: [thirdFloor, DC2],
 	assetMapping: {
 		333: 5,
-		16: 4
-	}
+		2: 4,
+	},
 }
 
 export default TEO
