@@ -59,7 +59,11 @@ export const assetColumns: any = [
 		accessorKey: "employee",
 		header: "Allocated To",
 		cell: ({ row }: any) => {
-			return row?.original.employee.name
+			return row?.original.employees
+				.map((employeeAsset: any) => {
+					return employeeAsset.employee.name // Access the employee field
+				})
+				.join(", ")
 		},
 	},
 ]
@@ -85,10 +89,10 @@ export const userColumns: any = [
 		accessorKey: "joinedOn",
 		header: "Joined On",
 	},
-	{
-		accessorKey: "checkedInAt",
-		header: "Checked In At",
-	},
+	// {
+	// 	accessorKey: "checkedInAt",
+	// 	header: "Checked In At",
+	// },
 	{
 		accessorKey: "statusType",
 		header: "Status Type",
@@ -97,34 +101,36 @@ export const userColumns: any = [
 		accessorKey: "statusReason",
 		header: "Status Reason",
 	},
-	{
-		accessorKey: "currentWeekHours",
-		header: "Current Week Hours",
-	},
-	{
-		accessorKey: "lastWeekHours",
-		header: "Last Week Hours",
-	},
+	// {
+	// 	accessorKey: "currentWeekHours",
+	// 	header: "Current Week Hours",
+	// },
+	// {
+	// 	accessorKey: "lastWeekHours",
+	// 	header: "Last Week Hours",
+	// },
 	{
 		header: "Assets",
 		accessorKey: "assets",
 
 		cell: ({ row }: any) => {
 			return row?.original.assets
-				.map((asset: Asset) => {
-					return asset.name
+				.map((employeeAsset: any) => {
+					return employeeAsset.asset.name
 				})
 				.join(", ")
 		},
 	},
 
-	{
-		accessorKey: "checkedOutAt",
-		header: "Checked Out At",
-		cell: ({ row }: any) => {
-			return new Date(row?.original.checkedOutAt).toLocaleDateString()
-		},
-	},
+	// {
+	// 	accessorKey: "checkedOutAt",
+	// 	header: "Checked Out At",
+	// 	cell: ({ row }: any) => {
+	// 		if (row?.original.checkedOutAt) {
+	// 			return new Date(row?.original?.checkedOutAt).toLocaleDateString()
+	// 		}
+	// 	},
+	// },
 	{
 		accessorKey: "modifiedTimeStamp",
 		header: "Last Modified",

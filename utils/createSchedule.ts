@@ -31,7 +31,7 @@ const createSchedule: any = async (prevState: null, values: any) => {
 				days: {
 					create: dayArray.map((dayOfWeek) => ({ dayOfWeek })),
 				},
-				endDate: endDate && new Date(endDate).toISOString(),
+				endDate: endDate ? new Date(endDate).toISOString() : null,
 			},
 		})
 

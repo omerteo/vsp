@@ -16,7 +16,7 @@ interface IndexPageProps {
 
 export default async function SchedulePage({ searchParams }: IndexPageProps) {
 	const { page, per_page } = searchParams
-	// calculate limit and offset according page and per_page records
+
 	const limit = typeof per_page === "string" ? parseInt(per_page) : 10
 	const offset = typeof page === "string" ? (parseInt(page) > 0 ? (parseInt(page) - 1) * limit : 0) : 0
 

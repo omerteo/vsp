@@ -1,20 +1,21 @@
 import * as z from "zod"
-import { CompleteAsset, RelatedAssetModel, CompleteEmployee, RelatedEmployeeModel, CompleteDay, RelatedDayModel } from "./index"
+import { CompleteAsset, RelatedAssetModel, CompleteDay, RelatedDayModel, CompleteEmployeeAsset, RelatedEmployeeAssetModel, CompleteEmployee, RelatedEmployeeModel } from "./index"
 
 export const ScheduleModel = z.object({
   id: z.number().int(),
   createdAt: z.date(),
   assetId: z.number().int(),
-  employeeId: z.number().int(),
   startDate: z.date(),
   endDate: z.date().nullish(),
   scheduleType: z.string(),
+  employeeId: z.number().int(),
 })
 
 export interface CompleteSchedule extends z.infer<typeof ScheduleModel> {
   asset: CompleteAsset
-  employee: CompleteEmployee
   days: CompleteDay[]
+  allocations: CompleteEmployeeAsset[]
+  employee: CompleteEmployee
 }
 
 /**
@@ -24,6 +25,7 @@ export interface CompleteSchedule extends z.infer<typeof ScheduleModel> {
  */
 export const RelatedScheduleModel: z.ZodSchema<CompleteSchedule> = z.lazy(() => ScheduleModel.extend({
   asset: RelatedAssetModel,
-  employee: RelatedEmployeeModel,
   days: RelatedDayModel.array(),
+  allocations: RelatedEmployeeAssetModel.array(),
+  employee: RelatedEmployeeModel,
 }))

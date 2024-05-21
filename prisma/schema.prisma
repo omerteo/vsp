@@ -83,13 +83,12 @@ model AssetType {
 }
 
 model Asset {
-  id         Int        @id @default(autoincrement())
-  createdAt  DateTime   @default(now())
-  name       String
-  typeId     Int
-  schedules  Schedule[]
-  employeeId Int
-  employee   Employee   @relation(fields: [employeeId], references: [employeeId])
+  id        Int             @id @default(autoincrement())
+  createdAt DateTime        @default(now())
+  name      String
+  typeId    Int
+  schedules Schedule[]
+  employees EmployeeAsset[]
 }
 
 model Plan {
@@ -101,16 +100,17 @@ model Plan {
 }
 
 model Schedule {
-  id           Int       @id @default(autoincrement())
-  createdAt    DateTime  @default(now())
+  id           Int             @id @default(autoincrement())
+  createdAt    DateTime        @default(now())
   assetId      Int
-  employeeId   Int
   startDate    DateTime
   endDate      DateTime? // Make this optional
   scheduleType String
-  asset        Asset     @relation(fields: [assetId], references: [id], onUpdate: NoAction)
-  employee     Employee  @relation(fields: [employeeId], references: [employeeId], onUpdate: NoAction)
-  days         Day[]     @relation("scheduleToDay")
+  asset        Asset           @relation(fields: [assetId], references: [id], onUpdate: NoAction)
+  days         Day[]           @relation("scheduleToDay")
+  allocations  EmployeeAsset[]
+  employeeId   Int
+  employee     Employee        @relation(fields: [employeeId], references: [employeeId])
 }
 
 model Day {
@@ -123,7 +123,7 @@ model Day {
 }
 
 model Employee {
-  employeeId        Int        @id @unique
+  employeeId        Int             @id @unique
   name              String
   yearsExperience   Int? // nullable because it can be null
   joinedOn          DateTime
@@ -137,6 +137,17 @@ model Employee {
   modifiedTimeStamp Int?
   statusType        String?
   statusReason      String?
-  assets            Asset[]
+  assets            EmployeeAsset[]
   schedules         Schedule[]
+}
+
+model EmployeeAsset {
+  employeeId Int
+  assetId    Int
+  scheduleId Int?
+  employee   Employee  @relation(fields: [employeeId], references: [employeeId], onUpdate: NoAction, onDelete: NoAction)
+  asset      Asset     @relation(fields: [assetId], references: [id])
+  schedule   Schedule? @relation(fields: [scheduleId], references: [id])
+
+  @@id([employeeId, assetId])
 }

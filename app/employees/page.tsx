@@ -37,8 +37,8 @@ interface IndexPageProps {
 // 		imagePath: employee.ImagePath,
 // 		employeeCode: employee.EmployeeCode,
 // 		designationName: employee.DesignationName,
-// 		checkedInAt: new Date(employee.CheckedInAt).toISOString(),
-// 		checkedOutAt: new Date(employee.CheckedOutAt).toISOString(),
+// 		checkedInAt: null,
+// 		checkedOutAt: null,
 // 		currentWeekHours: employee.CurrentWeekHours,
 // 		lastWeekHours: employee.LastWeekHours,
 // 		modifiedTimeStamp: employee.ModifiedTimeStamp,
@@ -71,7 +71,11 @@ export default async function AssetsPage({ searchParams }: IndexPageProps) {
 		skip: offset,
 		take: limit,
 		include: {
-			assets: true,
+			assets: {
+				include: {
+					asset: true,
+				},
+			},
 			schedules: {
 				include: {
 					days: true,
@@ -79,6 +83,8 @@ export default async function AssetsPage({ searchParams }: IndexPageProps) {
 			},
 		},
 	})
+
+	// await runMigration(employees)
 
 	const total = await prisma.employee.count()
 

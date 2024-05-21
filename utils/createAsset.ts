@@ -15,7 +15,11 @@ const createAsset: any = async (prevState: State | null, values: FormData) => {
 			data: {
 				name,
 				typeId: +typeId,
-				employeeId: +employeeId,
+				employees: {
+					create: {
+						employeeId: +employeeId,
+					},
+				},
 			},
 		})
 

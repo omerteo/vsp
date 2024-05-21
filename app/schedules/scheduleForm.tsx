@@ -121,7 +121,7 @@ export const ScheduleForm = ({ assets, users }: { assets: any; users: any }) => 
 				)}
 
 				{scheduleType === "weekly" && (
-					<div>
+					<div className="space-y-2">
 						{["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].map((day) => (
 							<Controller
 								key={day}
@@ -129,9 +129,9 @@ export const ScheduleForm = ({ assets, users }: { assets: any; users: any }) => 
 								control={control}
 								defaultValue={false} // set default value
 								render={({ field }) => (
-									<label>
-										<input type="checkbox" {...field} />
-										{day.charAt(0).toUpperCase() + day.slice(1)}
+									<label className="flex items-center space-x-2">
+										<input type="checkbox" {...field} className="form-checkbox h-5 w-5 text-blue-600" />
+										<span>{day.charAt(0).toUpperCase() + day.slice(1)}</span>
 									</label>
 								)}
 							/>

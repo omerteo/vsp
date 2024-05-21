@@ -23,12 +23,13 @@ export default async function AssetsPage({ searchParams }: IndexPageProps) {
 		skip: offset,
 		take: limit,
 		include: {
-			employee: true,
-			schedules: true,
+			employees: {
+				include: {
+					employee: true,
+				},
+			},
 		},
 	})
-
-	console.log(assets)
 
 	const totals = await prisma.asset.count()
 

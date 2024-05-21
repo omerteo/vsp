@@ -12,7 +12,11 @@ export async function POST(req: Request) {
 			data: {
 				name,
 				typeId: Number(typeId),
-				employeeId: Number(employeeId),
+				employees: {
+					create: {
+						employeeId: Number(employeeId),
+					},
+				},
 			},
 		})
 
@@ -20,7 +24,6 @@ export async function POST(req: Request) {
 			asset: {
 				name: asset.name,
 				typeId: asset.typeId,
-				userId: asset.employeeId,
 			},
 		})
 	} catch (error: any) {
