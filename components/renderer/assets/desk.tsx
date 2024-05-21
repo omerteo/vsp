@@ -5,12 +5,11 @@ const DeskProps = {
 	height: 80,
 }
 export default function Desk({ props }: Asset) {
-	console.log("props", props)
 	return (
 		<rect
 			width={DeskProps.width * (props?.span || 1)}
 			height={DeskProps.height}
-			fill={props?.fill || "blue"}
+			className="fill-asset-desk"
 			strokeWidth={1}
 			stroke={"black"}
 		/>
