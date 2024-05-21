@@ -4,13 +4,12 @@ import AssetComp from "../assets"
 export default function Room({ props, assets, label }: Asset) {
 	return (
 		<>
-			<rect width={props?.width} height={props?.height} fill={props?.fill || "red"} />
+			<rect width={props?.width} height={props?.height} className="fill-asset-room" />
 			<text
 				x="50%"
 				y={props?.height ? props.height - 15 : "80%"}
 				fontFamily="Verdana"
 				fontSize="15"
-				fill="blue"
 				dominantBaseline="middle"
 				textAnchor="middle"
 			>
