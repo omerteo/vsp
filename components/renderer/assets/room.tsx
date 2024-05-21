@@ -1,10 +1,10 @@
-import { Asset } from "@/types/plan"
+import { Asset } from "@/types/asset"
 import AssetComp from "../assets"
 
 export default function Room({ props, assets, label }: Asset) {
 	return (
 		<>
-			<rect width={props?.width} height={props?.height} fill={props.fill || "red"} />
+			<rect width={props?.width} height={props?.height} fill={props?.fill || "red"} />
 			<text
 				x="50%"
 				y={props?.height ? props.height - 15 : "80%"}

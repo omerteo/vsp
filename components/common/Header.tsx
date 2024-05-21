@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import SideBar from "./SideBar"
-import { AvatarIcon } from "@radix-ui/react-icons"
+import { useUserStore } from "@/lib/slices/userInfoSlice"
 
 const Header = () => {
 	const session = useSession()
@@ -14,6 +14,7 @@ const Header = () => {
 	const [openSidebar, setOpenSidebar] = useState(false)
 	const [openUserMenu, setOpenUserMenu] = useState(false)
 	const [isMobile, setIsMobile] = useState(false)
+	const userInfo = useUserStore((state) => state)
 
 	const toggleSidebar = () => {
 		setOpenSidebar(!openSidebar)
@@ -93,8 +94,13 @@ const Header = () => {
 							<ThemeToggle />
 							<div className="relative inline-block text-left">
 								<div>
-									<AvatarIcon
-										className="w-8 h-8 text-gray-400 dark:text-gray-200 cursor-pointer"
+									<Image
+										src={userInfo?.profilePicture}
+										alt="User Avatar"
+										unoptimized
+										width={40}
+										height={40}
+										className="rounded-full cursor-pointer"
 										onClick={toggleUserMenu}
 									/>
 								</div>

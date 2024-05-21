@@ -15,14 +15,13 @@ interface AssetComposerProps {
 	asset: Asset | undefined
 }
 export default function AssetComposer({ asset }: AssetComposerProps) {
-	console.log(asset)
 	return (
 		<svg
 			data-type={asset?.type}
-			x={asset?.props.x}
-			y={asset?.props.y}
-			width={asset?.props.width}
-			height={asset?.props.height}
+			x={asset?.props?.x || 0}
+			y={asset?.props?.y || 0}
+			width={asset?.props?.width}
+			height={asset?.props?.height}
 			data-editable={asset?.editable}
 			data-assignable={asset?.assignable}
 			data-asset-id={asset?.id}

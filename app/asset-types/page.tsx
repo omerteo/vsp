@@ -20,7 +20,6 @@ async function getAssetTypes() {
 
 export default async function AssetTypePage() {
 	const assetTypes = await getAssetTypes()
-	console.log(assetTypes)
 
 	return (
 		<>

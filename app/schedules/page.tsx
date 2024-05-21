@@ -16,22 +16,24 @@ interface IndexPageProps {
 
 export default async function SchedulePage({ searchParams }: IndexPageProps) {
 	const { page, per_page } = searchParams
-	// calculate limit and offset according page and per_page records
+
 	const limit = typeof per_page === "string" ? parseInt(per_page) : 10
 	const offset = typeof page === "string" ? (parseInt(page) > 0 ? (parseInt(page) - 1) * limit : 0) : 0
 
 	const schedules = await prisma.schedule.findMany({
 		skip: offset,
 		take: limit,
+		include: {
+			employee: true,
+			asset: true,
+			days: true,
+		},
 	})
 
 	const totals = await prisma.asset.count()
 
-	const assetTypes = await prisma.assetType.findMany()
-	const users = await prisma.user.findMany()
-	const days = await prisma.day.findMany()
-
-	console.log(schedules)
+	const assets = await prisma.asset.findMany()
+	const employee = await prisma.employee.findMany()
 
 	const pageCount = Math.ceil(totals / limit)
 
@@ -52,7 +54,7 @@ export default async function SchedulePage({ searchParams }: IndexPageProps) {
 							<DialogDescription>Create Schedule Here</DialogDescription>
 						</DialogHeader>
 						<div className="grid gap-4 py-4">
-							<ScheduleForm assetTypes={assetTypes} users={users} days={days} />
+							<ScheduleForm assets={assets} users={employee} />
 						</div>
 						{/* <DialogFooter>
           <Button type="submit">Save changes</Button>

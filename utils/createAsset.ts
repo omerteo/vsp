@@ -10,12 +10,16 @@ const createAsset: any = async (prevState: State | null, values: FormData) => {
 	const formDatatoObject = Object.fromEntries(values)
 
 	try {
-		const { name, typeId, userId } = assetSchema.parse(formDatatoObject)
+		const { name, typeId, employeeId } = assetSchema.parse(formDatatoObject)
 		const asset = await prisma.asset.create({
 			data: {
 				name,
 				typeId: +typeId,
-				userId: userId,
+				employees: {
+					create: {
+						employeeId: +employeeId,
+					},
+				},
 			},
 		})
 

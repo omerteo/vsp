@@ -8,17 +8,30 @@ const createSchedule: any = async (prevState: null, values: any) => {
 	const formDatatoObject = Object.fromEntries(values)
 
 	try {
-		const { typeId, userId, startDate, endDate, days } = formDatatoObject
-		console.log("days", days)
+		const { typeId, employeeId, startDate, scheduleType, endDate } = formDatatoObject
+		const dayObject = Object.entries(formDatatoObject).reduce((acc: any, [key, value]) => {
+			if (key.startsWith("days")) {
+				acc[key.split(".")[1]] = value
+			}
+			return acc
+		}, {})
+		let dayArray
+		if (scheduleType === "permanent") {
+			dayArray = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+		} else {
+			dayArray = Object.keys(dayObject).filter((key) => dayObject[key])
+		}
+
 		const schedule = await prisma.schedule.create({
 			data: {
 				assetId: +typeId,
-				userId: userId,
+				employeeId: +employeeId,
 				startDate: new Date(startDate).toISOString(),
-				endDate: new Date(endDate).toISOString(),
+				scheduleType: scheduleType,
 				days: {
-					connect: days?.split(",").map((dayId: string) => ({ id: +dayId })),
+					create: dayArray.map((dayOfWeek) => ({ dayOfWeek })),
 				},
+				endDate: endDate ? new Date(endDate).toISOString() : null,
 			},
 		})
 

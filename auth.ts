@@ -9,7 +9,10 @@ import AzureProvider from "next-auth/providers/azure-ad"
 import type { Adapter } from "@auth/core/adapters"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-	session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 },
+	session: {
+		strategy: "jwt",
+		maxAge: 30 * 24 * 60 * 60, // 30 days
+	},
 	secret: process.env.JWT_SECRET,
 	adapter: PrismaAdapter(prisma) as Adapter,
 	pages: {
@@ -22,7 +25,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 			clientId: `${process.env.AZ_CLIENTID}`,
 			tenantId: process.env.AZ_TENANTID,
 			clientSecret: `${process.env.AZ_CLIENTSECRET}`,
-			allowDangerousEmailAccountLinking: true,
 		}),
 		CredentialsProvider({
 			name: "Sign in",
@@ -72,26 +74,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 			}
 			return true
 		},
-		jwt: ({ token, user }) => {
+		// async jwt({ token, user, account, profile }) {
+		// 	// Persist the OAuth access_token to the token right after signin
+
+		// 	if (account) {
+		// 		console.log("account", token)
+		// 		token.accessToken = account.access_token
+		// 	}
+		// 	return token
+		// },
+		async jwt({ token, user, account }) {
 			if (user) {
-				const u = user as unknown as any
-				return {
-					...token,
-					id: u.id,
-					randomKey: u.randomKey,
-				}
+				token.id = user.id
+			}
+			if (account) {
+				token.accessToken = account.access_token
 			}
 			return token
 		},
-		session(params: any) {
-			return {
-				...params.session,
-				user: {
-					...params.session.user,
-					id: params.token.id as string,
-					randomKey: params.token.randomKey,
-				},
-			}
+		async redirect({ url }) {
+			return url
 		},
 	},
 })

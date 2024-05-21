@@ -1,13 +1,11 @@
 "use client"
 
-import { AssetInput, assetSchema } from "@/lib/asset-schema"
-import { Asset } from "@/types/user"
-import createAsset from "@/utils/createAsset"
+import { assetSchema } from "@/lib/asset-schema"
 import createSchedule from "@/utils/createSchedule"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useFormState, useFormStatus } from "react-dom"
-import { FieldPath, useForm } from "react-hook-form"
+import { Controller, FieldPath, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 
 export type State =
@@ -25,9 +23,10 @@ export type State =
 	  }
 	| null
 
-export const ScheduleForm = ({ assetTypes, users, days }: { assetTypes: any; users: any; days: any }) => {
+export const ScheduleForm = ({ assets, users }: { assets: any; users: any }) => {
 	const [createPostState, createPostAction] = useFormState<State, any>(createSchedule, null)
 	const { pending } = useFormStatus()
+	const [scheduleType, setScheduleType] = useState("")
 	const methods = useForm<any>({
 		resolver: zodResolver(assetSchema),
 		mode: "all",
@@ -38,6 +37,7 @@ export const ScheduleForm = ({ assetTypes, users, days }: { assetTypes: any; use
 		formState: { errors },
 		setError,
 		reset,
+		control,
 	} = methods
 
 	const input_style =
@@ -72,9 +72,9 @@ export const ScheduleForm = ({ assetTypes, users, days }: { assetTypes: any; use
 				{errors["name"] && <span className="text-red-500 text-xs pt-1 block">{errors["name"]?.message as string}</span>} */}
 				<select className={`${select_style} `} {...register("typeId")}>
 					<option selected disabled>
-						Select asset type
+						Select asset
 					</option>
-					{assetTypes?.map((assetType: any, index: number) => (
+					{assets?.map((assetType: any, index: number) => (
 						<option key={index} value={assetType.id}>
 							{assetType.name}
 						</option>
@@ -83,12 +83,12 @@ export const ScheduleForm = ({ assetTypes, users, days }: { assetTypes: any; use
 				{errors["typeId"] && (
 					<span className="text-red-500 text-xs pt-1 block">{errors["typeId"]?.message as string}</span>
 				)}
-				<select className={`${select_style}`} {...register("userId")}>
+				<select className={`${select_style}`} {...register("employeeId")}>
 					<option selected disabled>
 						Select user
 					</option>
 					{users?.map((user: any, index: number) => (
-						<option key={index} value={user.id}>
+						<option key={index} value={user.employeeId}>
 							{user.name}
 						</option>
 					))}
@@ -104,14 +104,40 @@ export const ScheduleForm = ({ assetTypes, users, days }: { assetTypes: any; use
 					<span className="text-red-500 text-xs pt-1 block">{errors["endDate"]?.message as string}</span>
 				)}
 
-				<div className="flex flex-wrap gap-2">
-					{days?.map((day: any, index: number) => (
-						<label key={index} className="flex items-center">
-							<input type="checkbox" {...register("days")} value={day.id} />
-							<span className="ml-2">{day.name}</span>
-						</label>
-					))}
-				</div>
+				<select
+					className={`${select_style}`}
+					{...register("scheduleType")}
+					onChange={(e) => setScheduleType(e.target.value)}
+				>
+					<option selected disabled>
+						Select schedule type
+					</option>
+					<option value="permanent">Permanent</option>
+					<option value="weekly">Weekly</option>
+				</select>
+
+				{errors["scheduleType"] && (
+					<span className="text-red-500 text-xs pt-1 block">{errors["scheduleType"]?.message as string}</span>
+				)}
+
+				{scheduleType === "weekly" && (
+					<div className="space-y-2">
+						{["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].map((day) => (
+							<Controller
+								key={day}
+								name={`days.${day}`}
+								control={control}
+								defaultValue={false} // set default value
+								render={({ field }) => (
+									<label className="flex items-center space-x-2">
+										<input type="checkbox" {...field} className="form-checkbox h-5 w-5 text-blue-600" />
+										<span>{day.charAt(0).toUpperCase() + day.slice(1)}</span>
+									</label>
+								)}
+							/>
+						))}
+					</div>
+				)}
 			</div>
 
 			<button
