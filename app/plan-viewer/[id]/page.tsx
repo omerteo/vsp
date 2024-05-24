@@ -4,17 +4,20 @@ import PlanViewer from "@/components/planViewer"
 import { getPlan, getAssets } from "../../utils"
 import { Plan } from "@/types/plan"
 import { Asset } from "@/types/asset"
+import { Employee } from "@prisma/client"
 
 export const revalidate = 3600
 
-let companyAssets: { [key: string]: { name: string } } = {};
+let companyAssetsWithAllocation: { [key: string]: { name: string, allocation: any[] } } = {};
 let assetMapping: { [key: string]: number } = {};
 
 function mapAssetToAsset(planAsset: Asset) {
 	const newAsset = { ...planAsset };
 
 	const correspondingAssetId = assetMapping[newAsset.id.toString()];
-	newAsset.label = companyAssets[correspondingAssetId]?.name || '';
+	newAsset.label = companyAssetsWithAllocation[correspondingAssetId]?.name || '';
+	newAsset.allocation = companyAssetsWithAllocation[correspondingAssetId]?.allocation || [];
+	
 	if (newAsset.assets) {
 		newAsset.assets = newAsset.assets.map(asset => mapAssetToAsset(asset));
 
@@ -34,7 +37,7 @@ export default async function FloorPlan({ params }: { params: { id: string } }) 
 	const assetResponse = await getAssets();
 
 	assetResponse.forEach(obj => {
-		companyAssets[obj.id] = { name: obj.name };
+		companyAssetsWithAllocation[obj.id] = { name: obj.name, allocation: obj.employees};
 	});
 
 	let plan: Plan | null = null

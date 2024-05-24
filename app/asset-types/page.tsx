@@ -6,7 +6,7 @@ import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrig
 import { columns } from "@/components/tables/columns"
 
 async function getAssetTypes() {
-	const response = await fetch("http:localhost:3000/api/asset-types", {
+	const response = await fetch("http:localhost:3001/api/asset-types", {
 		cache: "no-store",
 		next: { tags: ["assetType"] },
 		headers: {

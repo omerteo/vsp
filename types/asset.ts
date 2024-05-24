@@ -18,4 +18,5 @@ export interface Asset extends Created {
     assignable?: boolean
     isolated?: boolean
     label?: string
+    allocation?: any[]
 }
