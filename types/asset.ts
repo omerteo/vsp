@@ -7,6 +7,7 @@ type AssetProps = {
     width?: number
     height?: number
     fill?: string
+    label?: string
 }
 
 export interface Asset extends Created {

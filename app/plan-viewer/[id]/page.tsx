@@ -15,12 +15,16 @@ function mapAssetToAsset(planAsset: Asset) {
 	const newAsset = { ...planAsset };
 
 	const correspondingAssetId = assetMapping[newAsset.id.toString()];
-	newAsset.label = companyAssetsWithAllocation[correspondingAssetId]?.name || '';
-	newAsset.allocation = companyAssetsWithAllocation[correspondingAssetId]?.allocation || [];
+	const correspondingAsset = companyAssetsWithAllocation[correspondingAssetId];
+	
+	if (correspondingAsset) {
+		console.log(correspondingAsset)
+		newAsset.label = correspondingAsset.name || '';
+		newAsset.allocation = correspondingAsset.allocation.map(assigned => assigned.employee.name) || [];
+	}
 	
 	if (newAsset.assets) {
 		newAsset.assets = newAsset.assets.map(asset => mapAssetToAsset(asset));
-
 	}
 	return newAsset
 }
@@ -34,7 +38,7 @@ export default async function FloorPlan({ params }: { params: { id: string } }) 
 		return <>not found</>
 	}
 	// const planResponse = await getPlan(parseInt(params.id));
-	const assetResponse = await getAssets();
+	const assetResponse = await getAssets();//TODO: Make this get only needed assets
 
 	assetResponse.forEach(obj => {
 		companyAssetsWithAllocation[obj.id] = { name: obj.name, allocation: obj.employees};
