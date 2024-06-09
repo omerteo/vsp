@@ -16,10 +16,12 @@ export default function Desk({ props, allocation }: Asset) {
 			stroke={"black"}
 		>
 		</rect>
+		{Array.isArray(allocation) && allocation.map((user, index) => (
+			<text x={width/2} y={DeskProps.height/2 + 15 * (index + 1)} font-family="Verdana" font-size="15" dominant-baseline="middle" text-anchor="middle" key="index">
+				{user}
+			</text>
+		))}
 		
-		<text x={width/2} y={DeskProps.height/2} font-family="Verdana" font-size="15" dominant-baseline="middle" text-anchor="middle">
-		{JSON.stringify(allocation)}
-		</text>
 		</>
 	)
 }

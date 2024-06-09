@@ -9,13 +9,11 @@ import { Employee } from "@prisma/client"
 export const revalidate = 3600
 
 let companyAssetsWithAllocation: { [key: string]: { name: string, allocation: any[] } } = {};
-let assetMapping: { [key: string]: number } = {};
 
 function mapAssetToAsset(planAsset: Asset) {
 	const newAsset = { ...planAsset };
 
-	const correspondingAssetId = assetMapping[newAsset.id.toString()];
-	const correspondingAsset = companyAssetsWithAllocation[correspondingAssetId];
+	const correspondingAsset = companyAssetsWithAllocation[newAsset.id.toString()];//See if an asset with the same id exists in the company asset list
 	
 	if (correspondingAsset) {
 		console.log(correspondingAsset)
@@ -45,10 +43,6 @@ export default async function FloorPlan({ params }: { params: { id: string } }) 
 	});
 
 	let plan: Plan | null = null
-
-	if (planResponse && planResponse.assetMapping) {
-		assetMapping = planResponse.assetMapping
-	}
 
 	if (planResponse && planResponse.sites) {
 		plan = {
