@@ -94,6 +94,7 @@ const Header = () => {
 							<ThemeToggle />
 							<div className="relative inline-block text-left">
 								<div>
+									{userInfo?.profilePicture && 
 									<Image
 										src={userInfo?.profilePicture}
 										alt="User Avatar"
@@ -102,7 +103,7 @@ const Header = () => {
 										height={40}
 										className="rounded-full cursor-pointer"
 										onClick={toggleUserMenu}
-									/>
+									/>}
 								</div>
 
 								{openUserMenu && (
