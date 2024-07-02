@@ -108,7 +108,7 @@ const DC2: Asset = {
 			editable: true,
 			assets: [
 				{
-				id: 2,
+				id: 1002,
 				type: 2,
 				props: { span: 2, x: 30, y: 20 },
 				}
