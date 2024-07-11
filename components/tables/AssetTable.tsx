@@ -1,365 +1,82 @@
-// "use client"
+import { getAssets } from '@/lib/data';
+import { Asset } from '@prisma/client';
+import Image from 'next/image';
+// import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
+// import InvoiceStatus from '@/app/ui/invoices/status';
+// import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
+// import { fetchFilteredInvoices } from '@/app/lib/data';
 
-// import * as React from "react"
-// import { CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon } from "@radix-ui/react-icons"
-// import {
-// 	ColumnDef,
-// 	ColumnFiltersState,
-// 	SortingState,
-// 	VisibilityState,
-// 	flexRender,
-// 	getCoreRowModel,
-// 	getFilteredRowModel,
-// 	getPaginationRowModel,
-// 	getSortedRowModel,
-// 	useReactTable,
-// } from "@tanstack/react-table"
+export default async function AssetTable({
+  query,
+  currentPage,
+}: {
+  query: string;
+  currentPage: number;
+}) {
+  const assets = await getAssets(query, currentPage);
 
-// import { Button } from "@/components/ui/button"
-// import { Checkbox } from "@/components/ui/checkbox"
-// import {
-// 	DropdownMenu,
-// 	DropdownMenuCheckboxItem,
-// 	DropdownMenuContent,
-// 	DropdownMenuItem,
-// 	DropdownMenuLabel,
-// 	DropdownMenuSeparator,
-// 	DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu"
-// import { Input } from "@/components/ui/input"
-// import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-// import { Asset } from "@/types/user"
+  return (
+    <div className="mt-6 flow-root">
+      <div className="inline-block min-w-full align-middle">
+        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          
+          <table className="hidden min-w-full text-gray-900 md:table">
+            <thead className="rounded-lg text-left text-sm font-normal">
+              <tr>
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  Asset
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Assigned To
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  
+                </th>
+              
+                <th scope="col" className="relative py-3 pl-6 pr-3">
+                  
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              {assets?.map((asset) => (
+                <tr
+                  key={asset.id}
+                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
+                >
+                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                  {asset.name}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {asset.employees.map((employee) => (
+                        <div key={employee.employee.name} className="flex items-center gap-2">
+                            {/* <Image
+                                src={employee.employee.avatar}
+                                alt={employee.employee.name}
+                                width={30}
+                                height={30}
+                                className="rounded-full"
+                            /> */}
+                            <span>{employee.employee.name}</span>
+                        </div>
+                    ))}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                   
+                  </td>
 
-// export const columns: ColumnDef<Asset | any>[] = [
-// 	{
-// 		id: "select",
-// 		header: ({ table }) => (
-// 			<Checkbox
-// 				checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-// 				onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-// 				aria-label="Select all"
-// 			/>
-// 		),
-// 		cell: ({ row }) => (
-// 			<Checkbox
-// 				checked={row.getIsSelected()}
-// 				onCheckedChange={(value) => row.toggleSelected(!!value)}
-// 				aria-label="Select row"
-// 			/>
-// 		),
-// 		enableSorting: false,
-// 		enableHiding: false,
-// 	},
-// 	{
-// 		accessorKey: "name",
-// 		header: "Name",
-// 		cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
-// 	},
-// 	// {
-// 	// 	accessorKey: "email",
-// 	// 	header: ({ column }) => {
-// 	// 		return (
-// 	// 			<Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-// 	// 				Email
-// 	// 				<CaretSortIcon className="ml-2 h-4 w-4" />
-// 	// 			</Button>
-// 	// 		)
-// 	// 	},
-// 	// 	cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-// 	// },
-// 	// {
-// 	// 	accessorKey: "amount",
-// 	// 	header: () => <div className="text-right">Amount</div>,
-// 	// 	cell: ({ row }) => {
-// 	// 		const amount = parseFloat(row.getValue("amount"))
-
-// 	// 		// Format the amount as a dollar amount
-// 	// 		const formatted = new Intl.NumberFormat("en-US", {
-// 	// 			style: "currency",
-// 	// 			currency: "USD",
-// 	// 		}).format(amount)
-
-// 	// 		return <div className="text-right font-medium">{formatted}</div>
-// 	// 	},
-// 	// },
-// 	// {
-// 	// 	id: "actions",
-// 	// 	enableHiding: false,
-// 	// 	cell: ({ row }) => {
-// 	// 		const payment = row.original
-
-// 	// 		return (
-// 	// 			<DropdownMenu>
-// 	// 				<DropdownMenuTrigger asChild>
-// 	// 					<Button variant="ghost" className="h-8 w-8 p-0">
-// 	// 						<span className="sr-only">Open menu</span>
-// 	// 						<DotsHorizontalIcon className="h-4 w-4" />
-// 	// 					</Button>
-// 	// 				</DropdownMenuTrigger>
-// 	// 				<DropdownMenuContent align="end">
-// 	// 					<DropdownMenuLabel>Actions</DropdownMenuLabel>
-// 	// 					<DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-// 	// 						Copy payment ID
-// 	// 					</DropdownMenuItem>
-// 	// 					<DropdownMenuSeparator />
-// 	// 					<DropdownMenuItem>View customer</DropdownMenuItem>
-// 	// 					<DropdownMenuItem>View payment details</DropdownMenuItem>
-// 	// 				</DropdownMenuContent>
-// 	// 			</DropdownMenu>
-// 	// 		)
-// 	// 	},
-// 	// },
-// ]
-
-// type AssetTableProps = {
-// 	assets: Asset[]
-// }
-
-// export function AssetTable({ assets }: AssetTableProps) {
-// 	const [sorting, setSorting] = React.useState<SortingState>([])
-// 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-// 	const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-// 	const [rowSelection, setRowSelection] = React.useState({})
-
-// 	const table = useReactTable({
-// 		data: assets,
-// 		columns,
-// 		onSortingChange: setSorting,
-// 		onColumnFiltersChange: setColumnFilters,
-// 		getCoreRowModel: getCoreRowModel(),
-// 		getPaginationRowModel: getPaginationRowModel(),
-// 		getSortedRowModel: getSortedRowModel(),
-// 		getFilteredRowModel: getFilteredRowModel(),
-// 		onColumnVisibilityChange: setColumnVisibility,
-// 		onRowSelectionChange: setRowSelection,
-// 		state: {
-// 			sorting,
-// 			columnFilters,
-// 			columnVisibility,
-// 			rowSelection,
-// 		},
-// 	})
-
-// 	return (
-// 		<div className="w-full">
-// 			<div className="flex items-center py-4">
-// 				<Input
-// 					placeholder="Filter By Name..."
-// 					value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-// 					onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-// 					className="max-w-sm"
-// 				/>
-// 				<DropdownMenu>
-// 					<DropdownMenuTrigger asChild>
-// 						<Button variant="outline" className="ml-auto">
-// 							Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
-// 						</Button>
-// 					</DropdownMenuTrigger>
-// 					<DropdownMenuContent align="end">
-// 						{table
-// 							.getAllColumns()
-// 							.filter((column) => column.getCanHide())
-// 							.map((column) => {
-// 								return (
-// 									<DropdownMenuCheckboxItem
-// 										key={column.id}
-// 										className="capitalize"
-// 										checked={column.getIsVisible()}
-// 										onCheckedChange={(value) => column.toggleVisibility(!!value)}
-// 									>
-// 										{column.id}
-// 									</DropdownMenuCheckboxItem>
-// 								)
-// 							})}
-// 					</DropdownMenuContent>
-// 				</DropdownMenu>
-// 			</div>
-// 			<div className="rounded-md border">
-// 				<Table>
-// 					<TableHeader>
-// 						{table.getHeaderGroups().map((headerGroup) => (
-// 							<TableRow key={headerGroup.id}>
-// 								{headerGroup.headers.map((header) => {
-// 									return (
-// 										<TableHead key={header.id}>
-// 											{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-// 										</TableHead>
-// 									)
-// 								})}
-// 							</TableRow>
-// 						))}
-// 					</TableHeader>
-// 					<TableBody>
-// 						{table?.getRowModel()?.rows?.length ? (
-// 							table?.getRowModel().rows.map((row) => (
-// 								<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-// 									{row.getVisibleCells().map((cell) => (
-// 										<TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-// 									))}
-// 								</TableRow>
-// 							))
-// 						) : (
-// 							<TableRow>
-// 								<TableCell colSpan={columns.length} className="h-24 text-center">
-// 									No results.
-// 								</TableCell>
-// 							</TableRow>
-// 						)}
-// 					</TableBody>
-// 				</Table>
-// 			</div>
-// 			<div className="flex items-center justify-end space-x-2 py-4">
-// 				<div className="flex-1 text-sm text-muted-foreground">
-// 					{table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
-// 					selected.
-// 				</div>
-// 				<div className="space-x-2">
-// 					<Button
-// 						variant="outline"
-// 						size="sm"
-// 						onClick={() => table.previousPage()}
-// 						disabled={!table.getCanPreviousPage()}
-// 					>
-// 						Previous
-// 					</Button>
-// 					<Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-// 						Next
-// 					</Button>
-// 				</div>
-// 			</div>
-// 		</div>
-// 	)
-// }
-
-// .../tables/data-table.tsx
-"use client"
-
-import {
-	ColumnDef,
-	PaginationState,
-	flexRender,
-	getCoreRowModel,
-	getPaginationRowModel,
-	useReactTable,
-} from "@tanstack/react-table"
-
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import React from "react"
-import { DataTablePagination } from "./data-table-pagination"
-
-interface DataTableProps<TData, TValue> {
-	columns: ColumnDef<TData, TValue>[]
-	data: TData[]
-	pageCount: number
-}
-
-export function DataTable<TData, TValue>({ columns, data, pageCount }: DataTableProps<TData, TValue>) {
-	const router = useRouter()
-	const pathname = usePathname()
-	const searchParams = useSearchParams()
-
-	// search params
-	const page = searchParams?.get("page") ?? "1" // default is page: 1
-	const per_page = searchParams?.get("per_page") ?? "5" // default 5 record per page
-
-	// create query string
-	const createQueryString = React.useCallback(
-		(params: Record<string, string | number | null>) => {
-			const newSearchParams = new URLSearchParams(searchParams?.toString())
-
-			for (const [key, value] of Object.entries(params)) {
-				if (value === null) {
-					newSearchParams.delete(key)
-				} else {
-					newSearchParams.set(key, String(value))
-				}
-			}
-
-			return newSearchParams.toString()
-		},
-		[searchParams]
-	)
-
-	// handle server-side pagination
-	const [{ pageIndex, pageSize }, setPagination] = React.useState<PaginationState>({
-		pageIndex: Number(page) - 1,
-		pageSize: Number(per_page),
-	})
-
-	const pagination = React.useMemo(
-		() => ({
-			pageIndex,
-			pageSize,
-		}),
-		[pageIndex, pageSize]
-	)
-
-	React.useEffect(() => {
-		setPagination({
-			pageIndex: Number(page) - 1,
-			pageSize: Number(per_page),
-		})
-	}, [page, per_page])
-
-	// changed the route as well
-	React.useEffect(() => {
-		router.push(
-			`${pathname}?${createQueryString({
-				page: pageIndex + 1,
-				per_page: pageSize,
-			})}`
-		)
-	}, [pageIndex, pageSize])
-
-	const table = useReactTable({
-		data,
-		columns,
-		pageCount: pageCount ?? -1,
-		state: {
-			pagination,
-		},
-		onPaginationChange: setPagination,
-		getCoreRowModel: getCoreRowModel(),
-		getPaginationRowModel: getPaginationRowModel(),
-		manualPagination: true,
-	})
-
-	return (
-		<div className="rounded-md border">
-			<Table>
-				<TableHeader>
-					{table.getHeaderGroups().map((headerGroup) => (
-						<TableRow key={headerGroup.id}>
-							{headerGroup.headers.map((header) => {
-								return (
-									<TableHead key={header.id}>
-										{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-									</TableHead>
-								)
-							})}
-						</TableRow>
-					))}
-				</TableHeader>
-				<TableBody>
-					{table.getRowModel().rows?.length ? (
-						table.getRowModel().rows.map((row) => (
-							<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-								{row.getVisibleCells().map((cell) => (
-									<TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-								))}
-							</TableRow>
-						))
-					) : (
-						<TableRow>
-							<TableCell colSpan={columns.length} className="h-24 text-center">
-								No results.
-							</TableCell>
-						</TableRow>
-					)}
-				</TableBody>
-			</Table>
-			<DataTablePagination table={table} />
-		</div>
-	)
+                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                    <div className="flex justify-end gap-3">
+                      {/* <UpdateInvoice id={invoice.id} />
+                      <DeleteInvoice id={invoice.id} /> */}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
 }
