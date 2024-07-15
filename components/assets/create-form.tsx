@@ -19,8 +19,8 @@ export default function Form({ assetTypes, users }: { assetTypes: any; users: an
     return (
         <form action={formAction}>
             <div className="mb-6 flex flex-col gap-2">
-                <input id="name" placeholder="Name" className={`${input_style}`} />
-                <select className={`${select_style} `} id="typeId">
+                <input name="name" placeholder="Name" className={`${input_style}`} />
+                <select className={`${select_style} `} name="typeId">
                     <option selected disabled>
                         Select asset
                     </option>
@@ -31,7 +31,7 @@ export default function Form({ assetTypes, users }: { assetTypes: any; users: an
                     ))}
                 </select>
                 
-                <select className={`${select_style}`} id="employeeId">
+                <select className={`${select_style}`} name="employeeId">
                     <option selected disabled>
                         Select user
                     </option>
@@ -41,6 +41,7 @@ export default function Form({ assetTypes, users }: { assetTypes: any; users: an
                         </option>
                     ))}
                 </select>
+                
             </div>
             <div aria-live="polite" aria-atomic="true">
           {state.message ? (

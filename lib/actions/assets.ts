@@ -9,8 +9,8 @@ import prisma from "@/prisma/prisma"
 const FormSchema = z.object({
   id: string(),
   name: string({ required_error: "Name is required" }).min(1, "Name is required"),
-	typeId: string({ required_error: "Type Id is required" }),
-	employeeId: string({})
+  typeId: string({ required_error: "Type Id is required" }),
+  employeeId: string({})
 });
 
 const CreateAsset = FormSchema.omit({ id: true });
@@ -27,55 +27,47 @@ export type State = {
 
 
 export async function createAsset(prevState: State, formData: FormData) {
-    // Validate form fields using Zod
-    const validatedFields = CreateAsset.safeParse({
-      name: formData.get('name'),
-      typeId: formData.get('typeId'),
-      employeeId: formData.get('employeeId'),
-    });
-  
-    // If form validation fails, return errors early. Otherwise, continue.
-    if (!validatedFields.success) {
-      return {
-        errors: validatedFields.error.flatten().fieldErrors,
-        message: 'Missing Fields. Failed to Create Asset.',
-      };
-    }
-  
-    // Prepare data for insertion into the database
-    const { name, typeId, employeeId } = validatedFields.data;
-    const date = new Date().toISOString().split('T')[0];
-  
-    // Insert data into the database
-    try {
-      await prisma.asset.create({
-        data: {
-          name,
-          typeId: Number(typeId),
-          employees: {
-            create: {
-              employeeId: Number(employeeId),
-            },
-          },
-        },
-      })
-    } catch (error) {
-      // If a database error occurs, return a more specific error.
-      return {
-        message: 'Database Error: Failed to Create Asset.',
-      };
-    }
-  
-    // Revalidate the cache for the Assets page and redirect the user.
-    revalidatePath('/assets');
-    redirect('/Assets');
+  // Validate form fields using Zod
+  const validatedFields = CreateAsset.safeParse({
+    name: formData.get('name'),
+    typeId: formData.get('typeId'),
+    employeeId: formData.get('employeeId'),
+  });
+
+  // If form validation fails, return errors early. Otherwise, continue.
+  console.log(formData.get('name'))
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Asset.',
+    };
   }
 
-  export async function addToCart(prevState, queryData) {
-    const itemID = queryData.get('itemID');
-    if (itemID === "1") {
-      return "Added to cart";
-    } else {
-      return "Couldn't add to cart: the item is sold out.";
-    }
+  // Prepare data for insertion into the database
+  const { name, typeId, employeeId } = validatedFields.data;
+  const date = new Date().toISOString().split('T')[0];
+
+  // Insert data into the database
+  try {
+    await db.asset.create({
+      data: {
+        name,
+        typeId: Number(typeId),
+        employees: {
+          create: {
+            employeeId: Number(employeeId),
+          },
+        },
+      },
+    })
+  } catch (error) {
+    // If a database error occurs, return a more specific error.
+    return {
+      message: 'Database Error: Failed to Create Asset.',
+    };
   }
+
+  // Revalidate the cache for the Assets page and redirect the user.
+  revalidatePath('/assets');
+  redirect('/assets');
+}
