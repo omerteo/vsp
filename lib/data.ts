@@ -59,6 +59,15 @@ export async function getAssetPageCount(query: string) {
             }
         }
     });
-    console.log(assetsLength)
     return Math.ceil(assetsLength / ITEMS_PER_TABLE);
+}
+
+export async function assetTypes() {
+    const assetTypes = await prisma.assetType.findMany();
+    return assetTypes;
+}
+
+export async function getEmployees() {
+    const employees = await prisma.employee.findMany();
+    return employees;
 }
