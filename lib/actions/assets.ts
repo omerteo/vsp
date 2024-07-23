@@ -4,13 +4,12 @@ import { string, z } from "zod"
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "../db";
-import prisma from "@/prisma/prisma"
 
 const FormSchema = z.object({
   id: string(),
   name: string({ required_error: "Name is required" }).min(1, "Name is required"),
   typeId: string({ required_error: "Type Id is required" }),
-  employeeId: string({})
+  employeeId: string().optional()
 });
 
 const CreateAsset = FormSchema.omit({ id: true });
@@ -49,16 +48,21 @@ export async function createAsset(prevState: State, formData: FormData) {
 
   // Insert data into the database
   try {
+    const data: { name: string; typeId: number; employees?: { create: { employeeId: number } } } = {
+      name,
+      typeId: Number(typeId),
+    };
+
+    // if (employeeId) {
+    //   data['employees'] = {create : {employeeId : Number(employeeId)}}
+    // } 
+    // employees: {
+    //   create: {
+    //     employeeId: Number(employeeId),
+    //   },
+    // },
     await db.asset.create({
-      data: {
-        name,
-        typeId: Number(typeId),
-        employees: {
-          create: {
-            employeeId: Number(employeeId),
-          },
-        },
-      },
+      data
     })
   } catch (error) {
     // If a database error occurs, return a more specific error.
