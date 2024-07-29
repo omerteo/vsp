@@ -4,20 +4,25 @@ import PlanViewer from "@/components/planViewer"
 import { getPlan, getAssets } from "../../utils"
 import { Plan } from "@/types/plan"
 import { Asset } from "@/types/asset"
+import { Employee } from "@prisma/client"
 
 export const revalidate = 3600
 
-let companyAssets: { [key: string]: { name: string } } = {};
-let assetMapping: { [key: string]: number } = {};
+let companyAssetsWithAllocation: { [key: string]: { name: string, allocation: any[] } } = {};
 
 function mapAssetToAsset(planAsset: Asset) {
 	const newAsset = { ...planAsset };
 
-	const correspondingAssetId = assetMapping[newAsset.id.toString()];
-	newAsset.label = companyAssets[correspondingAssetId]?.name || '';
+	const correspondingAsset = companyAssetsWithAllocation[newAsset.id.toString()];//See if an asset with the same id exists in the company asset list
+	
+	if (correspondingAsset) {
+		console.log(correspondingAsset)
+		newAsset.label = correspondingAsset.name || '';
+		newAsset.allocation = correspondingAsset.allocation.map(assigned => assigned.employee.name) || [];
+	}
+	
 	if (newAsset.assets) {
 		newAsset.assets = newAsset.assets.map(asset => mapAssetToAsset(asset));
-
 	}
 	return newAsset
 }
@@ -31,17 +36,13 @@ export default async function FloorPlan({ params }: { params: { id: string } }) 
 		return <>not found</>
 	}
 	// const planResponse = await getPlan(parseInt(params.id));
-	const assetResponse = await getAssets();
+	const assetResponse = await getAssets();//TODO: Make this get only needed assets
 
 	assetResponse.forEach(obj => {
-		companyAssets[obj.id] = { name: obj.name };
+		companyAssetsWithAllocation[obj.id] = { name: obj.name, allocation: obj.employees};
 	});
 
 	let plan: Plan | null = null
-
-	if (planResponse && planResponse.assetMapping) {
-		assetMapping = planResponse.assetMapping
-	}
 
 	if (planResponse && planResponse.sites) {
 		plan = {
