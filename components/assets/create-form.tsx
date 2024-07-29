@@ -32,7 +32,7 @@ export default function Form({ assetTypes, users }: { assetTypes: any; users: an
                 </select>
 
                 <select className={`${select_style}`} name="employeeId">
-                    <option selected>
+                    <option selected value="">
                         Assign to user (optional)
                     </option>
                     {users?.map((user: any, index: number) => (

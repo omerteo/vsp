@@ -53,14 +53,11 @@ export async function createAsset(prevState: State, formData: FormData) {
       typeId: Number(typeId),
     };
 
-    // if (employeeId) {
-    //   data['employees'] = {create : {employeeId : Number(employeeId)}}
-    // } 
-    // employees: {
-    //   create: {
-    //     employeeId: Number(employeeId),
-    //   },
-    // },
+    console.log(employeeId)
+
+    if (employeeId) {
+      data['employees'] = {create : {employeeId : Number(employeeId)}}
+    } 
     await db.asset.create({
       data
     })
