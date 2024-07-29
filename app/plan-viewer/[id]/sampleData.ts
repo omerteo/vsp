@@ -8,7 +8,7 @@ const thirdFloor: Asset = {
 	editable: true,
 	assets: [
 		{
-			id: 2,
+			id: 1,
 			type: 2,
 			props: { span: 2, x: 30, y: 20, fill: "red" },
 			assignable: true,
@@ -102,9 +102,22 @@ const DC2: Asset = {
 	editable: true,
 	assets: [
 		{
+			id: 1,
+			type: 1,
+			props: { x: 0, y: 0, width: 500, height: 500, fill: 'orange' },
+			editable: true,
+			assets: [
+				{
+				id: 1002,
+				type: 2,
+				props: { span: 2, x: 30, y: 20 },
+				}
+			]
+		},
+		{
 			id: 22,
 			type: 2,
-			props: { span: 2, x: 30, y: 20 },
+			props: { span: 2, x: 30, y: 90 },
 		},
 	],
 }
@@ -114,8 +127,7 @@ const TEO: Plan = {
 	title: "TEO Hassan Arcade",
 	sites: [thirdFloor, DC2],
 	assetMapping: {
-		333: 5,
-		2: 4,
+		2: 1,
 	},
 }
 

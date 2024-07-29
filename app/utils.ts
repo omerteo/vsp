@@ -20,6 +20,14 @@ export const getAssetCatalog = cache(async () => {
 })
 
 export const getAssets = cache(async () => {
-  const items = await db.asset.findMany()
+  const items = await db.asset.findMany({
+		include: {
+			employees: {
+				include: {
+					employee: true,
+				},
+			},
+		},
+	})
   return items
 })
