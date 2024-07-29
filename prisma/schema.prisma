@@ -2,16 +2,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-generator zod {
-  provider              = "zod-prisma"
-  output                = "./zod"
-  useDecimalJs          = "true"
-  modelCase             = "PascalCase"
-  relationModel         = "true"
-  modelSuffix           = "Model"
-  prismaJsonNullability = "true"
-}
-
 datasource db {
   provider = "sqlserver"
   url      = env("DATABASE_URL")
