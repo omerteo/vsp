@@ -6,7 +6,6 @@ import { useSession } from "next-auth/react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import SideBar from "./SideBar"
-import { useUserStore } from "@/lib/slices/userInfoSlice"
 
 const Header = () => {
 	const session = useSession()
@@ -14,7 +13,7 @@ const Header = () => {
 	const [openSidebar, setOpenSidebar] = useState(false)
 	const [openUserMenu, setOpenUserMenu] = useState(false)
 	const [isMobile, setIsMobile] = useState(false)
-	const userInfo = useUserStore((state) => state)
+	const userInfo = {}
 
 	const toggleSidebar = () => {
 		setOpenSidebar(!openSidebar)
@@ -94,7 +93,7 @@ const Header = () => {
 							<ThemeToggle />
 							<div className="relative inline-block text-left">
 								<div>
-									{userInfo?.profilePicture && 
+									{/* {userInfo?.profilePicture && 
 									<Image
 										src={userInfo?.profilePicture}
 										alt="User Avatar"
@@ -103,7 +102,7 @@ const Header = () => {
 										height={40}
 										className="rounded-full cursor-pointer"
 										onClick={toggleUserMenu}
-									/>}
+									/>} */}
 								</div>
 
 								{openUserMenu && (

@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
 	:root {
@@ -72,14 +70,5 @@
 		--seat: 0 84.2% 60.2%;
 		--desk: 200 84.2% 60.2%;
 		--room: 210 80% 40.1%;
-	}
-}
-
-@layer base {
-	* {
-		@apply border-border;
-	}
-	body {
-		@apply bg-background text-foreground;
 	}
 }
